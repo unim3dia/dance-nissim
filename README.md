@@ -2,7 +2,9 @@
 
 A bilingual digital archive for exploring Nissim Ben-Ami's Israeli folk dance collection.
 
-The site currently presents 1,940 recordings grouped into 855 dance titles, with Hebrew and English browsing, choreographer credits, formation and decade filters, favorites, recently viewed dances, accessible display preferences, and a full-screen discovery mode.
+The site currently presents 1,940 recordings grouped into 849 dance entries, with Hebrew and English browsing, choreographer credits, formation and decade filters, favorites, recently viewed dances, accessible display preferences, and a full-screen discovery mode. Different choreographies with the same title remain separate.
+
+Run `node scripts/check-catalog.cjs` before publishing to verify that every recording has a readable bilingual title and credit and that distinct choreographies stay separate.
 
 ## Run locally
 
