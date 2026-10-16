@@ -16,6 +16,14 @@ vm.runInContext(app.slice(0, app.indexOf('const t=')) + '\nwindow.auditDances=da
 
 const catalog = context.window.CATALOG;
 const dances = context.window.auditDances;
+for (const id of ['_Cpue-QZbOY', 'p-2cny8C2IY', 'PKVHKFe5apE']) {
+  const video = catalog.find(v => v.id === id);
+  assert.equal(video.choreoEn, 'Chaim Ochayon');
+  assert.equal(video.choreoHe, 'חיים אוחיון');
+}
+for (const id of ['rNkFP2DRkdI', 'vFM6L7fRn44', 'I1ozZYKnmcc', 'Xpz7IhfmNc4']) {
+  assert.ok(!catalog.some(v => v.id === id), 'Excluded recording returned to catalog');
+}
 const invalid = /ללא כותרת|\bLl Kvtrt\b|^Israeli(?: Folk)? Danc|^Dance with Nissim|^Untitled$|^Tgdy$|Tgydy Gyl|^עם$/i;
 const badTitles = catalog.filter(v => !v.he?.trim() || !v.en?.trim() || invalid.test(v.he) || invalid.test(v.en));
 assert.equal(badTitles.length, 0, `Invalid dance titles: ${badTitles.map(v => v.id).join(', ')}`);
