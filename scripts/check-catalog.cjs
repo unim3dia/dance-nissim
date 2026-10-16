@@ -22,7 +22,7 @@ for (const id of ['_Cpue-QZbOY', 'p-2cny8C2IY', 'PKVHKFe5apE']) {
   assert.equal(video.choreoHe, 'חיים אוחיון');
 }
 for (const id of ['rNkFP2DRkdI', 'vFM6L7fRn44', 'I1ozZYKnmcc', 'Xpz7IhfmNc4']) {
-  assert.ok(!catalog.some(v => v.id === id), 'Excluded recording returned to catalog');
+  assert.ok(catalog.some(v => v.id === id), 'Casablanca recording missing');
 }
 const invalid = /ללא כותרת|\bLl Kvtrt\b|^Israeli(?: Folk)? Danc|^Dance with Nissim|^Untitled$|^Tgdy$|Tgydy Gyl|^עם$/i;
 const badTitles = catalog.filter(v => !v.he?.trim() || !v.en?.trim() || invalid.test(v.he) || invalid.test(v.en));

@@ -47,7 +47,7 @@ const creditHebrew={
   'David Swisa':'דוד סויסה','Didi Dosh':'דידי דוש','Dudu Barzilay':'דודו ברזילי','Dudu Barzilay & Edo Israeli':'דודו ברזילי ועידו ישראלי',
   'Efrayim Weinburg':'אפרים ויינברג','Eileen Weinstock':'איילין ויינסטוק','Elad Shtamer':'אלעד שטמר','Elan Benedict':'אילן בנדיקט',
   'Eli Ronen':'אלי רונן','Eli Segal':'אלי סגל','Eliyahu Gamliel':'אליהו גמליאל','Eran Bitton':'ערן ביטון','Eyal Eliyahu':'אייל אליהו',
-  'Eyal Levi':'אייל לוי','Eyal Ozeri':'אייל עוזרי','Gadi Bitton':'גדי ביטון','Gila Paz':'גילה פז',
+  'Eyal Levi':'אייל לוי','Eyal Ozeri':'אייל עוזרי','Gadi Biton & Avi Levi':'גדי ביטון ואבי לוי','Gadi Bitton':'גדי ביטון','Gila Paz':'גילה פז',
   'Hanan Dadon':'חנן דדון','Ira Weisburd':'איירה ויסברד','Israel Shabtay':'ישראל שבתאי','Israel Shiker':'ישראל שיקר',
   'Israel Shiker & Avner Naim':'ישראל שיקר ואבנר נעים','Israel Yakovee':'ישראל יעקובי','Itzhak Ben Dahan':'יצחק בן דהן','Itzik Ben-Ami':'איציק בן עמי',
   'Itzik Saada':'איציק סעדה','Kobi Michaeli':'קובי מיכאלי','Leah Bergstein':'לאה ברגשטיין','Levi Bar Gil':'לוי בר גיל',
