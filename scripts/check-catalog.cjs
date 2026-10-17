@@ -16,13 +16,23 @@ vm.runInContext(app.slice(0, app.indexOf('const t=')) + '\nwindow.auditDances=da
 
 const catalog = context.window.CATALOG;
 const dances = context.window.auditDances;
+const titleCardCredits = JSON.parse(fs.readFileSync(path.join(__dirname, 'title-card-credits.json'), 'utf8'));
+for (const [id, creator] of Object.entries(titleCardCredits)) {
+  assert.equal(catalog.find(v => v.id === id)?.choreoKey, creator, `Title-card credit changed for ${id}`);
+}
+assert.ok(catalog.every(v => /[א-ת]/.test(v.choreoHe)), 'Hebrew creator name missing');
 for (const id of ['_Cpue-QZbOY', 'p-2cny8C2IY', 'PKVHKFe5apE']) {
   const video = catalog.find(v => v.id === id);
   assert.equal(video.choreoEn, 'Chaim Ochayon');
   assert.equal(video.choreoHe, 'חיים אוחיון');
 }
 for (const id of ['rNkFP2DRkdI', 'vFM6L7fRn44', 'I1ozZYKnmcc', 'Xpz7IhfmNc4']) {
-  assert.ok(catalog.some(v => v.id === id), 'Casablanca recording missing');
+  assert.ok(!catalog.some(v => v.id === id), 'Excluded recording returned');
+}
+const excludedCreator = new RegExp(['avi[\\s_-]+(?:levy|levi|lewy|lewi)\\b', 'אבי[\\s־-]+לוי'].join('|'), 'i');
+assert.ok(!excludedCreator.test(JSON.stringify(catalog)), 'Excluded creator remains in catalog');
+for (const file of ['catalog.js', 'credits.js', 'research-data.js', 'app.js']) {
+  assert.ok(!excludedCreator.test(fs.readFileSync(path.join(root, file), 'utf8')), `Excluded creator remains in ${file}`);
 }
 const invalid = /ללא כותרת|\bLl Kvtrt\b|^Israeli(?: Folk)? Danc|^Dance with Nissim|^Untitled$|^Tgdy$|Tgydy Gyl|^עם$/i;
 const badTitles = catalog.filter(v => !v.he?.trim() || !v.en?.trim() || invalid.test(v.he) || invalid.test(v.en));

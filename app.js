@@ -20,6 +20,15 @@ const videoCredits=window.ARCHIVE_VIDEO_CREDITS||{};
 // Corrections confirmed by the archive curator take precedence when a video row has no credit.
 const manualCredits={'אדון עולם':'Gadi Bitton'};
 const creditCorrections={
+  'Gil & Mishel Cohen':'Gil & Michel Cohen','Levy Bar Gil':'Levi Bar Gil','Yankale\' Levy':'Yankale Levy',
+  'Israel Shabtai':'Israel Shabtay','Boni Pia':'Bonny Piha','Mali & Moshe':'Mali & Moshe Lipson','Mali and Moshe':'Mali & Moshe Lipson',
+  'Mali Lipson & Moshe':'Mali & Moshe Lipson','MOSHE TWILI':'Moshe Twili','Avi Amsalam':'Avi Amsalem','Chaim Shireon':'Chaim Shiryon',
+  'Dani Dassa':'Danni Dassa','Elan Benedict':'Ilan Benedict','Yaron Malihi':'Yaron Malichi','Naftaly Kadosh':'Naftali Kadosh',
+  'Moshiko Halevy':'Moshiko HaLevy','Seadia Amishai':'Saadia Amishi','Zehev Bendiket':'Zeev Benedict','Zev Maluch':'Zeev Malach',
+  'Alberto Zirlinger':'Alberto','Yonatan Karmon':'Yehonatan Karmon','Israel Shiker & Avner Naim':'Avner Naim & Israel Shiker',
+  'Levy Bar Gil & Eli Segal':'Eli Segal & Levi Bar Gil','Levy Bar Gil and Gadi Bitton':'Gadi Bitton & Levi Bar Gil',
+  'Alisha Sela & David Dassa':'David Dassa & Alisha Selah','Edo Israeli & Dudu Barzilay':'Dudu Barzilay & Edo Israeli',
+  'Dudu Barzilay + Yaron Malihi':'Dudu Barzilay & Yaron Malichi',
   'AVI PERETZ':'Avi Peretz','Avi Perez':'Avi Peretz','AVNER NAIM':'Avner Naim','BENTZY TIRAM':'Bentzi Tiram','BENTZI TIRAM':'Bentzi Tiram',
   'Dassa Danni':'Danni Dassa','David Dasa':'David Dassa','dudu barzel':'Dudu Barzilay','DUDU BARZILAY':'Dudu Barzilay',
   'ELIAHU GAMLIEL':'Eliyahu Gamliel','GADI BITON':'Gadi Bitton','KOBI MICHAELI':'Kobi Michaeli','Meir Shem-Tov':'Meir Shem Tov',
@@ -47,7 +56,10 @@ const creditHebrew={
   'David Swisa':'דוד סויסה','Didi Dosh':'דידי דוש','Dudu Barzilay':'דודו ברזילי','Dudu Barzilay & Edo Israeli':'דודו ברזילי ועידו ישראלי',
   'Efrayim Weinburg':'אפרים ויינברג','Eileen Weinstock':'איילין ויינסטוק','Elad Shtamer':'אלעד שטמר','Elan Benedict':'אילן בנדיקט',
   'Eli Ronen':'אלי רונן','Eli Segal':'אלי סגל','Eliyahu Gamliel':'אליהו גמליאל','Eran Bitton':'ערן ביטון','Eyal Eliyahu':'אייל אליהו',
-  'Eyal Levi':'אייל לוי','Eyal Ozeri':'אייל עוזרי','Gadi Biton & Avi Levi':'גדי ביטון ואבי לוי','Gadi Bitton':'גדי ביטון','Gila Paz':'גילה פז',
+  'Eyal Levi':'אייל לוי','Eyal Ozeri':'אייל עוזרי','Gadi Bitton':'גדי ביטון','Gila Paz':'גילה פז',
+  'Ilan Benedict':'אילן בנדיקט','Shlomi Mordechai':'שלומי מרדכי','Moshe Twili':'משה טוילי',
+  'Gadi Bitton & Levi Bar Gil':'גדי ביטון ולוי בר גיל','Avner Naim & Israel Shiker':'אבנר נעים וישראל שיקר',
+  'Eli Segal & Levi Bar Gil':'אלי סגל ולוי בר גיל','Dudu Barzilay & Yaron Malichi':'דודו ברזילי וירון מליחי',
   'Hanan Dadon':'חנן דדון','Ira Weisburd':'איירה ויסברד','Israel Shabtay':'ישראל שבתאי','Israel Shiker':'ישראל שיקר',
   'Israel Shiker & Avner Naim':'ישראל שיקר ואבנר נעים','Israel Yakovee':'ישראל יעקובי','Itzhak Ben Dahan':'יצחק בן דהן','Itzik Ben-Ami':'איציק בן עמי',
   'Itzik Saada':'איציק סעדה','Kobi Michaeli':'קובי מיכאלי','Leah Bergstein':'לאה ברגשטיין','Levi Bar Gil':'לוי בר גיל',
@@ -69,11 +81,11 @@ const creditHebrew={
   'Yom Tov Ohayon':'יום טוב אוחיון','Yonatan Gabai':'יונתן גבאי','Yoram Sasson':'יורם ששון','Yossi Azani':'יוסי עזאני',
   'Ze\'ev Nissim':'זאב ניסים','Zeev Benedict':'זאב בנדיקט','Zehev Bendiket':'זאב בנדיקט','Zev Maluch':'זאב מלוך','Zvi Friedhaber':'צבי פרידהבר'
 };
-const canonicalCredit=value=>creditCorrections[value]||value;
+const canonicalCredit=value=>{let name=value;const seen=new Set();while(creditCorrections[name]&&!seen.has(name)){seen.add(name);name=creditCorrections[name]}return name};
 const catalogHebrew=new Map();
 for(const v of window.CATALOG){if(v.choreoEn&&v.choreoHe&&/[א-ת]/.test(v.choreoHe))catalogHebrew.set(canonicalCredit(v.choreoEn),v.choreoHe)}
 const assignCredit=(v,value)=>{const en=canonicalCredit(value),he=creditHebrew[en]||catalogHebrew.get(en);v.choreoKey=en;v.choreoEn=en;v.choreoHe=he||''};
-const assignLocalizedCredit=(v,credit)=>{const en=canonicalCredit(credit.en);v.choreoKey=en;v.choreoEn=credit.displayEn||en;v.choreoHe=credit.he};
+const assignLocalizedCredit=(v,credit)=>{const en=canonicalCredit(credit.en);v.choreoKey=en;v.choreoEn=credit.displayEn||en;v.choreoHe=credit.he||creditHebrew[en]||catalogHebrew.get(en)||''};
 // Resolve credits before grouping so different choreographies with the same title stay separate.
 for(const v of window.CATALOG){const researched=researchedCredits[v.id],credit=videoCredits[v.id];if(researched)assignLocalizedCredit(v,researched);else if(credit)assignCredit(v,credit);if(manualCredits[v.he])assignCredit(v,manualCredits[v.he])}
 const titleCredits=new Map();
