@@ -7,25 +7,28 @@
   <title>ריקודי עם ניסים | Dance Nissim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=archive-design-1">
+  <link rel="stylesheet" href="style.css?v=library-controls-20261018">
 </head>
 <body>
   <a class="skip" href="#collection">Skip to the collection / מעבר לספרייה</a>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Dance Nissim / ריקודי עם ניסים">
-      <span class="brand-mark" aria-hidden="true">נ</span>
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 56 56"><path class="dance-orbit" d="M10 34a21 21 0 1 1 37 7M9 41l1-7 7 1"/><circle cx="23" cy="16" r="3"/><circle cx="36" cy="19" r="3"/><path d="m13 24 10-2 7 6 7-3 8 5M23 22l-3 13-7 8m7-8 9 8m7-18-2 11-6 10m6-10 10 6"/></svg></span>
       <span class="brand-wordmark"><strong data-he="ריקודי עם ניסים" data-en="Dance Nissim">ריקודי עם ניסים</strong><small data-he="אוסף של חיים" data-en="A lifetime of dance">אוסף של חיים</small></span>
     </a>
     <nav class="main-nav" aria-label="Navigation">
       <a class="library-nav" href="#collection" data-he="הספרייה" data-en="Library">הספרייה</a>
       <button class="discover-launch" data-he="לגלות" data-en="Discover">לגלות</button>
-      <button id="navFavorites" class="icon-button" aria-label="השמורים שלי" title="השמורים שלי"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg></button>
     </nav>
     <div class="header-tools">
       <button id="language">English</button>
       <details class="preferences" id="preferences">
         <summary aria-label="העדפות תצוגה" title="העדפות תצוגה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></summary>
         <div class="preferences-panel"><p data-he="תצוגה נוחה לכם" data-en="Make yourself comfortable">תצוגה נוחה לכם</p><button id="textSize" aria-pressed="false" data-he="טקסט גדול" data-en="Larger text">טקסט גדול</button><button id="theme">תצוגה בהירה</button></div>
+      </details>
+      <details id="libraryMenu" class="library-menu">
+        <summary aria-controls="tabs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-he="תפריט" data-en="Menu">תפריט</span></summary>
+        <div class="library-menu-panel"><p data-he="הספרייה שלכם" data-en="Your library">הספרייה שלכם</p><div id="tabs" role="group" aria-label="הספרייה"></div></div>
       </details>
     </div>
   </header>
@@ -40,16 +43,17 @@
       <div id="spotlight" class="spotlight"></div>
     </section>
     <section id="collection" class="collection">
-      <div class="section-heading"><h2 data-he="ספריית הריקודים" data-en="The dance library">ספריית הריקודים</h2><span id="total"></span></div>
+      <div class="section-heading"><h2 data-he="ספריית הריקודים" data-en="The dance library">ספריית הריקודים</h2></div>
       <div class="library-toolbar">
         <form id="searchForm" role="search">
           <label class="sr-only" for="search" data-he="חיפוש ריקוד או כוריאוגרף" data-en="Search dances or choreographers">חיפוש ריקוד או כוריאוגרף</label>
           <div class="search-row"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="search" type="search" autocomplete="off" placeholder="שם ריקוד או כוריאוגרף"><button type="submit" class="search-submit" data-he="חיפוש" data-en="Search">חיפוש</button></div>
         </form>
-        <label class="sort-control"><span class="sr-only" data-he="סדר תצוגה" data-en="Sort by">סדר תצוגה</span><select id="sort" aria-label="סדר תצוגה"></select></label>
-        <button id="filterToggle" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span data-he="סינון" data-en="Filters">סינון</span></button>
+        <div class="collection-actions">
+          <label class="sort-control"><span data-he="מיון לפי" data-en="Sort by">מיון לפי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg><select id="sort" aria-label="מיון לפי"></select></label>
+          <button id="filterToggle" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span><strong data-he="סינון ריקודים" data-en="Filter dances">סינון ריקודים</strong><small data-he="כוריאוגרף, סוג ריקוד ושנה" data-en="Choreographer, formation & year">כוריאוגרף, סוג ריקוד ושנה</small></span></button>
+        </div>
       </div>
-      <div class="browse-bar"><div id="tabs" class="tabs" role="group" aria-label="Collection"></div></div>
       <div id="filters" class="filters" hidden>
         <label><span data-he="סוג ריקוד" data-en="Formation">סוג ריקוד</span><select id="formation"></select></label>
         <label><span data-he="כוריאוגרף" data-en="Choreographer">כוריאוגרף</span><select id="choreographer"></select></label>
@@ -66,7 +70,7 @@
   <script src="catalog.js?v=title-cards-20261018"></script>
   <script src="credits.js?v=title-cards-20261018"></script>
   <script src="research-data.js?v=title-cards-20261018"></script>
-  <script src="app.js?v=title-cards-20261018"></script>
+  <script src="app.js?v=library-controls-20261018"></script>
   <script src="discover.js?v=simplified-library-20261018"></script>
 </body>
 </html>
