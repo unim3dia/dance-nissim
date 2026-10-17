@@ -16,6 +16,19 @@ vm.runInContext(app.slice(0, app.indexOf('const t=')) + '\nwindow.auditDances=da
 
 const catalog = context.window.CATALOG;
 const dances = context.window.auditDances;
+context.window.testGroups = dances;
+vm.runInContext(`
+  for (const group of window.testGroups) {
+    const featured = featuredRecordings(group);
+    if (featured[0].id !== group.main.id) throw new Error('Preferred recording changed');
+    const kinds = featured.map(v => v.type === 'teaching' ? 'teaching' : v.type === 'live' ? 'live' : 'dance');
+    if (new Set(kinds).size !== kinds.length) throw new Error('Duplicate featured recording kind');
+    if (group.records.some(v => v.type === 'teaching') && !featured.some(v => v.type === 'teaching')) throw new Error('Lesson lost');
+  }
+  const keys = ['first', 'middle', 'last'];
+  if (collectionNeighbor('first', keys, -1) !== null || collectionNeighbor('last', keys, 1) !== null) throw new Error('Navigation boundary failed');
+  if (collectionNeighbor('middle', keys, -1) !== 'first' || collectionNeighbor('middle', keys, 1) !== 'last') throw new Error('Navigation order changed');
+`, context);
 const titleCardCredits = JSON.parse(fs.readFileSync(path.join(__dirname, 'title-card-credits.json'), 'utf8'));
 for (const [id, creator] of Object.entries(titleCardCredits)) {
   assert.equal(catalog.find(v => v.id === id)?.choreoKey, creator, `Title-card credit changed for ${id}`);

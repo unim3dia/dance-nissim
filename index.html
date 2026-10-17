@@ -7,7 +7,7 @@
   <title>ריקודי עם ניסים | Dance Nissim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=library-controls-20261018">
+  <link rel="stylesheet" href="style.css?v=player-navigation-20261018">
 </head>
 <body>
   <a class="skip" href="#collection">Skip to the collection / מעבר לספרייה</a>
@@ -51,7 +51,7 @@
         </form>
         <div class="collection-actions">
           <label class="sort-control"><span data-he="מיון לפי" data-en="Sort by">מיון לפי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg><select id="sort" aria-label="מיון לפי"></select></label>
-          <button id="filterToggle" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span><strong data-he="סינון ריקודים" data-en="Filter dances">סינון ריקודים</strong><small data-he="כוריאוגרף, סוג ריקוד ושנה" data-en="Choreographer, formation & year">כוריאוגרף, סוג ריקוד ושנה</small></span></button>
+          <button id="filterToggle" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span data-he="סינון ריקודים" data-en="Filter dances">סינון ריקודים</span></button>
         </div>
       </div>
       <div id="filters" class="filters" hidden>
@@ -60,17 +60,16 @@
         <label><span data-he="תקופה" data-en="Decade">תקופה</span><select id="decade"></select></label>
         <button id="reset" data-he="ניקוי הסינון" data-en="Clear filters">ניקוי הסינון</button>
       </div>
-      <div class="results-header"><p id="resultCount" role="status" aria-live="polite"></p></div>
       <div id="grid" class="grid"></div><div id="empty" class="empty" hidden></div><button id="more" class="more" data-he="עוד ריקודים" data-en="Show more dances">עוד ריקודים</button>
     </section>
     <section class="closing"><p class="eyebrow" data-he="ריקודים מחברים אנשים" data-en="Dance brings us together">ריקודים מחברים אנשים</p><h2 data-he="האוסף של ניסים. הזיכרונות של כולנו." data-en="Nissim’s collection. Memories we share.">האוסף של ניסים. הזיכרונות של כולנו.</h2><a href="https://www.youtube.com/@DanceNissim" target="_blank" rel="noopener" data-he="לערוץ היוטיוב של ניסים ↗" data-en="Visit Nissim’s YouTube channel ↗">לערוץ היוטיוב של ניסים ↗</a></section>
   </main>
   <footer><span>Dance Nissim · ריקודי עם ניסים</span><span data-he="נבנה באהבה לריקודי העם" data-en="Made with love for folk dance">נבנה באהבה לריקודי העם</span></footer>
-  <dialog id="danceDialog"><div class="dialog-top"><button id="backDance" hidden data-he="הריקוד הקודם" data-en="Previous dance">הריקוד הקודם</button><button id="closeDialog" class="icon-button" aria-label="סגירה" title="סגירה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div id="danceContent"></div></dialog>
+  <dialog id="danceDialog"><div class="dialog-top"><button id="closeDialog" class="icon-button" aria-label="סגירה" title="סגירה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div id="danceContent"></div></dialog>
   <script src="catalog.js?v=title-cards-20261018"></script>
   <script src="credits.js?v=title-cards-20261018"></script>
   <script src="research-data.js?v=title-cards-20261018"></script>
-  <script src="app.js?v=library-controls-20261018"></script>
+  <script src="app.js?v=player-navigation-20261018"></script>
   <script src="discover.js?v=simplified-library-20261018"></script>
 </body>
 </html>
