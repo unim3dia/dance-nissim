@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 660" fill="none">
   <defs>
-    <linearGradient id="teal" x1="0" y1="300" x2="1440" y2="400" gradientUnits="userSpaceOnUse"><stop stop-color="#75d7c3" stop-opacity=".35"/><stop offset=".48" stop-color="#75d7c3" stop-opacity="0"/><stop offset="1" stop-color="#75d7c3" stop-opacity=".22"/></linearGradient>
-    <linearGradient id="brass" x1="0" y1="300" x2="1440" y2="400" gradientUnits="userSpaceOnUse"><stop stop-color="#d9b985" stop-opacity=".1"/><stop offset=".5" stop-color="#d9b985" stop-opacity=".28"/><stop offset="1" stop-color="#d9b985" stop-opacity="0"/></linearGradient>
+    <linearGradient id="teal" x1="0" y1="300" x2="1440" y2="400" gradientUnits="userSpaceOnUse"><stop stop-color="#64e6de" stop-opacity=".75"/><stop offset=".48" stop-color="#a797de" stop-opacity=".16"/><stop offset="1" stop-color="#64e6de" stop-opacity=".5"/></linearGradient>
+    <linearGradient id="brass" x1="0" y1="300" x2="1440" y2="400" gradientUnits="userSpaceOnUse"><stop stop-color="#d9b985" stop-opacity=".12"/><stop offset=".5" stop-color="#f0bd85" stop-opacity=".65"/><stop offset="1" stop-color="#cc8bdf" stop-opacity=".18"/></linearGradient>
+    <filter id="glow" x="-10%" y="-100%" width="120%" height="300%"><feGaussianBlur stdDeviation="3"/></filter>
   </defs>
+  <path d="M-100 305C165 45 225 610 545 390S980 40 1540 360" stroke="url(#teal)" stroke-width="5" filter="url(#glow)"/>
   <path d="M-100 305C165 45 225 610 545 390S980 40 1540 360" stroke="url(#teal)" stroke-width="1.5"/>
   <path d="M-100 330C170 95 240 565 560 405S1020 70 1540 380" stroke="url(#brass)"/>
   <path d="M-100 350C210 70 280 540 590 420S1060 110 1540 400" stroke="url(#teal)" stroke-width=".7"/>
