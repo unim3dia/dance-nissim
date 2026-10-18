@@ -197,9 +197,8 @@ dialog::backdrop { background: #030e16d9; backdrop-filter: blur(8px); }
 .recordings button { min-height: 48px; font-size: .9em; }
 .recordings button[aria-pressed=true] { background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
 .dance-navigation { border-color: var(--border); margin: 24px 0; }
-.dance-navigation button { font-size: .9em; }
-#nextCollectionDance { background: var(--accent); color: var(--action-ink); border-color: transparent; }
-#nextCollectionDance:disabled { background: var(--input); color: var(--muted); }
+.dance-navigation button { font-size: .9em; background: var(--accent); color: var(--action-ink); border-color: transparent; }
+.dance-navigation button:not(:disabled):hover { background: var(--text); color: var(--bg); }
 .related { margin-top: 0; padding-top: 0; border-top: 0; }
 .related h3 { margin: 0 0 18px; font-size: 1.1em; }
 .related .grid { gap: 24px 20px; }
@@ -267,5 +266,5 @@ body.large .sort-control { min-width: 132px; flex-basis: auto; }
   body::before { display: none; }
   .card { background: Canvas; border: 1px solid CanvasText; box-shadow: none; }
   .hero h1 .hero-accent { background: none; color: CanvasText; }
-  .primary, .more, #nextCollectionDance { border: 1px solid ButtonText; }
+  .primary, .more, .dance-navigation button { border: 1px solid ButtonText; }
 }
