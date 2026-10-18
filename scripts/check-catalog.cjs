@@ -16,6 +16,11 @@ vm.runInContext(app.slice(0, app.indexOf('const t=')) + '\nwindow.auditDances=da
 
 const catalog = context.window.CATALOG;
 const dances = context.window.auditDances;
+for (const id of ['n66kM4Q-Jq4', 'Pyn89hAM37Q', 'LrYhsev7-TY']) {
+  const video = catalog.find(v => v.id === id);
+  assert.equal(video.choreoEn, 'Eliyahu Gamliel', `Dror Ikra credit regressed: ${id}`);
+  assert.equal(video.choreoHe, 'אליהו גמליאל');
+}
 context.window.testGroups = dances;
 vm.runInContext(`
   for (const group of window.testGroups) {
