@@ -155,23 +155,25 @@ input { font-size: .95em; }
 .filters select { min-height: 48px; border-color: var(--control-border); }
 .grid { gap: 28px 24px; }
 .card {
-  --card-edge: #64ded1;
-  --card-edge-alt: #6aafdb;
-  --card-halo: #35d6ca40;
+  --card-edge: #a4c6c08c;
+  --card-edge-alt: #b4c0cf70;
+  --card-halo: #82c8be1a;
   padding: 6px 6px 16px;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: 15px;
   background: linear-gradient(var(--panel), var(--panel)) padding-box,
     linear-gradient(130deg, var(--card-edge), var(--card-edge-alt)) border-box;
-  box-shadow: 0 0 7px var(--card-halo), 0 0 24px var(--card-halo), 0 12px 30px var(--shadow);
+  box-shadow: 0 0 5px var(--card-halo), 0 0 14px var(--card-halo), 0 8px 24px var(--shadow);
   transition: transform .2s ease, box-shadow .2s ease;
 }
-.card:nth-child(3n + 2) { --card-edge: #e19cbe; --card-edge-alt: #e4c27d; --card-halo: #d77c9940; }
-.card:nth-child(3n) { --card-edge: #7ab8eb; --card-edge-alt: #bca7f0; --card-halo: #6ca7e740; }
+.card:nth-child(3n + 2) { --card-edge: #ccb8c38c; --card-edge-alt: #cdc29f70; --card-halo: #c1a0af1a; }
+.card:nth-child(3n) { --card-edge: #afc1d58c; --card-edge-alt: #c0b7d170; --card-halo: #a4b7d01a; }
 body.light .card { --card-edge: #247f76; --card-edge-alt: #397dac; --card-halo: #2c9d9329; }
 body.light .card:nth-child(3n + 2) { --card-edge: #b14f79; --card-edge-alt: #a07a2c; --card-halo: #b55a7c29; }
 body.light .card:nth-child(3n) { --card-edge: #387fae; --card-edge-alt: #8061b0; --card-halo: #567dbb29; }
-.card:focus-within { box-shadow: 0 0 10px var(--card-halo), 0 0 30px var(--card-halo), 0 0 0 1px var(--card-edge); }
+body.light .card { border-width: 1.5px; box-shadow: 0 0 7px var(--card-halo), 0 0 24px var(--card-halo), 0 12px 30px var(--shadow); }
+.card:focus-within { box-shadow: 0 0 8px var(--card-halo), 0 0 20px var(--card-halo), 0 0 0 1px var(--card-edge); }
+body.light .card:focus-within { box-shadow: 0 0 10px var(--card-halo), 0 0 30px var(--card-halo), 0 0 0 1px var(--card-edge); }
 .card-watch, .thumb { border-radius: 8px; }
 .card-watch { box-shadow: none; }
 .thumb { border: 0; }
@@ -210,7 +212,8 @@ dialog:not(.discovery-room) { border-color: var(--gold); }
 .room-screen { border: 1px solid var(--border); border-radius: var(--radius-surface); }
 .room-bottom .primary { background: var(--accent); color: var(--action-ink); }
 @media (hover: hover) {
-  .card:hover { transform: translateY(-3px); box-shadow: 0 0 10px var(--card-halo), 0 0 32px var(--card-halo), 0 12px 30px var(--shadow); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 0 8px var(--card-halo), 0 0 20px var(--card-halo), 0 8px 24px var(--shadow); }
+  body.light .card:hover { box-shadow: 0 0 10px var(--card-halo), 0 0 32px var(--card-halo), 0 12px 30px var(--shadow); }
   .related button:hover img { box-shadow: 0 0 30px var(--frame-glow), 0 0 0 1px var(--accent); }
   .card-watch:hover img { transform: scale(1.015); }
 }
