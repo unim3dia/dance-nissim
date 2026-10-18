@@ -8,6 +8,10 @@ The October 17 title-card audit is merged across all credit layers, with canonic
 
 Run `node scripts/check-catalog.cjs` before publishing to verify that every recording has a readable bilingual title and credit and that distinct choreographies stay separate.
 
+## Visual system
+
+`style.css` owns the layout and component behavior. `design.css` is the visual layer: shared dark/light palette tokens, reading surfaces, typography, corner shapes and interaction states. `assets/dance-ribbons.svg` provides the decorative background lines without animation or additional network dependencies. Keep atmospheric effects behind opaque reading surfaces. Run `node scripts/check-design.cjs` to check palette contrast when editing colors.
+
 ## Run locally
 
 From this directory, run:
