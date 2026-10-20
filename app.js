@@ -115,7 +115,7 @@ const renamedKeys=new Map();
 for(const g of groups.values())for(const v of g.records){const previous=v.previousTitle==='ללא כותרת'?v.id:v.previousTitle||v.he;if(previous!==g.key){if(!renamedKeys.has(previous))renamedKeys.set(previous,new Set());renamedKeys.get(previous).add(g.key)}}
 for(const key of [...saved]){const replacements=renamedKeys.get(key);if(replacements?.size===1){saved.delete(key);saved.add([...replacements][0])}}
 recent=[...new Set(recent.map(key=>renamedKeys.get(key)?.size===1?[...renamedKeys.get(key)][0]:key))];write('favorites',[...saved]);write('recent',recent);
-const preferredDemo={'אישה על החוף':'3sNhV4J9Awo'};
+const preferredDemo={'אישה על החוף':'3sNhV4J9Awo','הצריף הרעוע':'-VT9BJBqX-8'};
 const dances=[...groups.values()].map(g=>{g.records.sort((a,b)=>b.vn-a.vn);g.main=g.records.find(v=>v.id===preferredDemo[g.records[0].he])||g.records.find(v=>v.type==='dance')||g.records[0];g.search=[...g.records.map(v=>`${v.he} ${v.en} ${v.rom||''}`),g.main.choreoHe,g.main.choreoEn].filter(Boolean).join(' ');return g});
 // Feature one recording per kind without deleting alternate archival uploads.
 function featuredRecordings(group){
