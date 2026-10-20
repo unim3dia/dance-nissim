@@ -201,10 +201,16 @@ body.light .card:focus-within { box-shadow: 0 0 10px var(--card-halo), 0 0 30px 
 dialog { background: var(--panel); border-radius: var(--radius-surface); box-shadow: 0 28px 100px #0007; }
 dialog::backdrop { background: #030e16d9; backdrop-filter: blur(8px); }
 .dialog-top { background: var(--panel); }
+.dialog-top { justify-content: space-between; }
+.player-language { min-height: 44px; padding: 8px 12px; font-size: .8em; line-height: 1.3; white-space: nowrap; background: var(--input); border-color: var(--control-border); }
+.room-top { flex-wrap: wrap; gap: 12px; }
+.room-header-controls { display: flex; align-items: center; gap: 10px; margin-inline-start: auto; }
 .dialog-body { padding: 26px 32px 36px; }
 .details { line-height: 1.75; }
-.recordings button { min-height: 48px; font-size: .9em; }
-.recordings button[aria-pressed=true] { background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+.recordings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.recordings button { min-width: 0; min-height: 48px; padding: 10px 8px; font-size: .85em; line-height: 1.4; border-color: var(--control-border); }
+.recordings button[aria-pressed=true] { background: var(--accent); color: var(--action-ink); border-color: var(--accent); }
+.room-recordings { width: 100%; margin: 0; }
 .dance-navigation { border-color: var(--border); margin: 24px 0; }
 .dance-navigation button { font-size: .9em; background: var(--accent); color: var(--action-ink); border-color: transparent; }
 .dance-navigation button:not(:disabled):hover { background: var(--text); color: var(--bg); }
