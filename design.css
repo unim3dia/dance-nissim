@@ -24,26 +24,26 @@
   --radius-surface: 20px;
 }
 body.light {
-  --bg: #f5f1e8;
-  --panel: #fffdf8;
-  --text: #193238;
-  --muted: #506468;
+  --bg: #f7f9fd;
+  --panel: #fffefd;
+  --text: #192e50;
+  --muted: #4f6382;
   --gold: #795c2e;
-  --accent: #176a60;
+  --accent: #0038b8;
   --action-ink: #ffffff;
-  --border: #cbd3cb;
-  --control-border: #7b8f88;
-  --input: #fffdf8;
-  --shadow: #263e3210;
-  --accent-wash: #176a600b;
-  --halo-teal: #52c3b74a;
-  --halo-amber: #e5af5d52;
-  --halo-plum: #be91d13d;
-  --frame: #347e78;
-  --frame-glow: #23887e26;
-  --card-reading: #fffdf8ed;
-  --title-gradient: linear-gradient(105deg, #176a60 10%, #315e80 48%, #80517a 72%, #805c2b);
-  --header: #fffdf8ed;
+  --border: #c7d3e8;
+  --control-border: #7a8ba5;
+  --input: #fffefd;
+  --shadow: #143c8a14;
+  --accent-wash: #0038b80d;
+  --halo-teal: #0038b84d;
+  --halo-amber: #73a9ff52;
+  --halo-plum: #366be638;
+  --frame: #477bc4;
+  --frame-glow: #225cbe26;
+  --card-reading: #fffefded;
+  --title-gradient: linear-gradient(105deg, #123f9d 10%, #2573c4 48%, #0038b8 85%);
+  --header: #fffefded;
 }
 body {
   position: relative;
@@ -67,7 +67,7 @@ body::before {
   background: url('assets/dance-ribbons.svg') center 70px / max(1440px, 100%) 660px no-repeat;
   opacity: .85;
 }
-body.light::before { opacity: .4; }
+body.light::before { background-image: url('assets/dance-ribbons-blue.svg'); opacity: .65; }
 button, a, summary { transition: color .18s ease, background-color .18s ease, border-color .18s ease; }
 button, select { border-radius: var(--radius-control); }
 button:hover, a:hover { color: var(--accent); }

@@ -13,7 +13,7 @@ function luminance(hex) {
 function contrast(a, b) { const x = luminance(a), y = luminance(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); }
 const dark = tokens(':root');
 for (const [theme, palette] of [['dark', dark], ['light', { ...dark, ...tokens('body.light {') }]]) {
-  for (const [foreground, background, minimum] of [['text', 'panel', 4.5], ['muted', 'panel', 4.5], ['muted', 'input', 4.5], ['accent', 'panel', 4.5], ['gold', 'bg', 4.5], ['action-ink', 'accent', 4.5], ['control-border', 'input', 3]]) {
+  for (const [foreground, background, minimum] of [['text', 'panel', 4.5], ['text', 'bg', 4.5], ['muted', 'panel', 4.5], ['muted', 'bg', 4.5], ['muted', 'input', 4.5], ['accent', 'panel', 4.5], ['gold', 'bg', 4.5], ['action-ink', 'accent', 4.5], ['control-border', 'input', 3]]) {
     const ratio = contrast(palette[foreground], palette[background]);
     assert.ok(ratio >= minimum, `${theme}: ${foreground} on ${background} is ${ratio.toFixed(2)}:1`);
   }
