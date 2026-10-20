@@ -8,25 +8,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=header-preferences-20261020">
-  <link rel="stylesheet" href="design.css?v=header-preferences-20261020">
+  <link rel="stylesheet" href="design.css?v=compact-hero-20261021">
 </head>
 <body>
   <a class="skip" href="#collection">Skip to the collection / מעבר לספרייה</a>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Dance Nissim / ריקודי עם ניסים">
       <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 56 56"><path class="dance-orbit" d="M10 34a21 21 0 1 1 37 7M9 41l1-7 7 1"/><circle cx="23" cy="16" r="3"/><circle cx="36" cy="19" r="3"/><path d="m13 24 10-2 7 6 7-3 8 5M23 22l-3 13-7 8m7-8 9 8m7-18-2 11-6 10m6-10 10 6"/></svg></span>
-      <span class="brand-wordmark"><strong data-he="ריקודי עם ניסים" data-en="Dance Nissim">ריקודי עם ניסים</strong><small data-he="אוסף של חיים" data-en="A lifetime of dance">אוסף של חיים</small></span>
+      <span class="brand-wordmark"><strong data-he="ריקודי עם ניסים" data-en="Dance Nissim">ריקודי עם ניסים</strong></span>
     </a>
-    <nav class="main-nav" aria-label="Navigation">
-      <a class="library-nav" href="#collection" data-he="הספרייה" data-en="Library">הספרייה</a>
-      <button class="discover-launch" data-he="לגלות" data-en="Discover">לגלות</button>
-    </nav>
     <div class="header-tools">
-      <button id="language">English</button>
+      <button id="language" class="header-control language-control" type="button">English</button>
       <button id="textSize" class="header-control text-size-control" type="button" aria-pressed="true" aria-label="טקסט גדול" title="טקסט גדול"><span class="text-size-glyphs" aria-hidden="true" dir="ltr"><span class="text-small">א</span><span class="text-large">א</span></span></button>
       <button id="theme" class="header-control theme-control" type="button" aria-label="מעבר לתצוגה כהה" title="מעבר לתצוגה כהה"><span class="sun-icon" aria-hidden="true" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></span><span class="moon-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></span></button>
       <details id="libraryMenu" class="library-menu">
-        <summary aria-controls="tabs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-he="תפריט" data-en="Menu">תפריט</span></summary>
+        <summary aria-controls="tabs" aria-label="תפריט" title="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-he="תפריט" data-en="Menu">תפריט</span></summary>
         <div class="library-menu-panel"><p data-he="הספרייה שלכם" data-en="Your library">הספרייה שלכם</p><div id="tabs" role="group" aria-label="הספרייה"></div></div>
       </details>
     </div>
@@ -34,10 +30,8 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow" data-he="הארכיון של ניסים בן־עמי" data-en="The Nissim Ben-Ami archive">הארכיון של ניסים בן־עמי</p>
         <h1><span data-he="חיים של ריקוד." data-en="A lifetime of dance.">חיים של ריקוד.</span><span class="hero-accent" data-he="מקום לגלות." data-en="Yours to discover.">מקום לגלות.</span></h1>
-        <p class="intro" data-he="הריקודים שאתם אוהבים. הצעדים שעוד תכירו. לצפות ולרקוד עם ניסים." data-en="Watch, learn, and rediscover the joy of Israeli folk dance with Nissim.">הריקודים שאתם אוהבים. הצעדים שעוד תכירו. לצפות ולרקוד עם ניסים.</p>
-        <div class="hero-actions"><a class="primary" href="#collection" data-he="לספריית הריקודים" data-en="Explore the library">לספריית הריקודים</a><button class="discover-launch text-action" data-he="הפתיעו אותי ←" data-en="Surprise me →">הפתיעו אותי ←</button></div>
+        <div class="hero-actions"><a class="primary" href="#collection" data-he="לספריית הריקודים" data-en="Explore the library">לספריית הריקודים</a><button class="discover-launch surprise-action" data-he="הפתיעו אותי ←" data-en="Surprise me →">הפתיעו אותי ←</button></div>
       </div>
       <div id="spotlight" class="spotlight"></div>
     </section>
@@ -68,7 +62,7 @@
   <script src="catalog.js?v=dror-ikra-20261019"></script>
   <script src="credits.js?v=dror-ikra-20261019"></script>
   <script src="research-data.js?v=dror-ikra-20261019"></script>
-  <script src="app.js?v=header-preferences-20261020"></script>
+  <script src="app.js?v=compact-hero-20261021"></script>
   <script src="discover.js?v=simplified-library-20261018"></script>
 </body>
 </html>

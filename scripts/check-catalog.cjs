@@ -33,6 +33,13 @@ vm.runInContext(`
   const keys = ['first', 'middle', 'last'];
   if (collectionNeighbor('first', keys, -1) !== null || collectionNeighbor('last', keys, 1) !== null) throw new Error('Navigation boundary failed');
   if (collectionNeighbor('middle', keys, -1) !== 'first' || collectionNeighbor('middle', keys, 1) !== 'last') throw new Error('Navigation order changed');
+  const demoPool = window.testGroups.filter(g => g.main.type === 'dance');
+  const firstHero = chooseHero(window.testGroups, null, () => 0);
+  if (firstHero !== demoPool[0]) throw new Error('Hero must prefer a demonstration');
+  if (chooseHero(window.testGroups, firstHero.key, () => 0) === firstHero) throw new Error('Hero repeated on reload');
+  if (chooseHero(window.testGroups, null, () => .999999) !== demoPool.at(-1)) throw new Error('Hero selection misses the end of the collection');
+  if (chooseHero([], null) !== null) throw new Error('Empty hero selection failed');
+  if (chooseHero([firstHero], firstHero.key, () => 0) !== firstHero) throw new Error('Single-dance fallback failed');
 `, context);
 const titleCardCredits = JSON.parse(fs.readFileSync(path.join(__dirname, 'title-card-credits.json'), 'utf8'));
 for (const [id, creator] of Object.entries(titleCardCredits)) {
