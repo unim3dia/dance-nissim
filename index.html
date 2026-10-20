@@ -7,8 +7,8 @@
   <title>ריקודי עם ניסים | Dance Nissim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=player-navigation-20261018">
-  <link rel="stylesheet" href="design.css?v=paired-navigation-20261019">
+  <link rel="stylesheet" href="style.css?v=header-preferences-20261020">
+  <link rel="stylesheet" href="design.css?v=header-preferences-20261020">
 </head>
 <body>
   <a class="skip" href="#collection">Skip to the collection / מעבר לספרייה</a>
@@ -23,10 +23,8 @@
     </nav>
     <div class="header-tools">
       <button id="language">English</button>
-      <details class="preferences" id="preferences">
-        <summary aria-label="העדפות תצוגה" title="העדפות תצוגה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></summary>
-        <div class="preferences-panel"><p data-he="תצוגה נוחה לכם" data-en="Make yourself comfortable">תצוגה נוחה לכם</p><button id="textSize" aria-pressed="false" data-he="טקסט גדול" data-en="Larger text">טקסט גדול</button><button id="theme">תצוגה בהירה</button></div>
-      </details>
+      <button id="textSize" class="header-control text-size-control" type="button" aria-pressed="true" aria-label="טקסט גדול" title="טקסט גדול"><span class="text-size-glyphs" aria-hidden="true" dir="ltr"><span class="text-small">א</span><span class="text-large">א</span></span></button>
+      <button id="theme" class="header-control theme-control" type="button" aria-label="מעבר לתצוגה כהה" title="מעבר לתצוגה כהה"><span class="sun-icon" aria-hidden="true" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></span><span class="moon-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></span></button>
       <details id="libraryMenu" class="library-menu">
         <summary aria-controls="tabs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-he="תפריט" data-en="Menu">תפריט</span></summary>
         <div class="library-menu-panel"><p data-he="הספרייה שלכם" data-en="Your library">הספרייה שלכם</p><div id="tabs" role="group" aria-label="הספרייה"></div></div>
@@ -70,7 +68,7 @@
   <script src="catalog.js?v=dror-ikra-20261019"></script>
   <script src="credits.js?v=dror-ikra-20261019"></script>
   <script src="research-data.js?v=dror-ikra-20261019"></script>
-  <script src="app.js?v=large-text-default-20261018"></script>
+  <script src="app.js?v=header-preferences-20261020"></script>
   <script src="discover.js?v=simplified-library-20261018"></script>
 </body>
 </html>

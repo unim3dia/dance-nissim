@@ -93,12 +93,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .header-tools { gap: 8px; }
 .library-menu summary { background: var(--input); border-radius: var(--radius-control); }
 .library-menu[open] summary, .library-menu summary:hover { border-color: var(--accent); color: var(--accent); }
-.preferences-panel, .library-menu-panel {
+.library-menu-panel {
   background: var(--panel);
   border-radius: var(--radius-surface);
   box-shadow: 0 18px 60px var(--shadow);
 }
-#tabs button[aria-pressed=true], .preferences-panel button[aria-pressed=true] {
+#tabs button[aria-pressed=true] {
   background: var(--accent-wash);
   color: var(--accent);
   border-color: var(--accent);
@@ -256,6 +256,21 @@ dialog:not(.discovery-room) { border-color: var(--gold); }
 }
 body.large .site-header { flex-wrap: wrap; }
 body.large .header-tools { margin-inline-start: auto; }
+.header-control { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 46px; height: 46px; padding: 8px; color: var(--text); background: var(--input); border: 1px solid var(--control-border); border-radius: var(--radius-control); }
+.header-control:hover { background: var(--accent-wash); border-color: var(--accent); }
+.text-size-glyphs { display: inline-flex; align-items: baseline; justify-content: center; gap: 3px; line-height: 1; }
+.text-small { font-size: 13px; }
+.text-large { font-size: 23px; font-weight: 500; }
+.text-size-control[aria-pressed=true] { color: var(--accent); border-color: var(--accent); background: var(--accent-wash); }
+.theme-control span { display: flex; }
+.theme-control svg { width: 23px; height: 23px; }
+@media (max-width: 760px) {
+  .site-header { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .brand { justify-self: start; }
+  .header-tools, body.large .header-tools { width: 100%; margin-inline-start: 0; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px; }
+  .library-menu { margin-inline-start: auto; }
+  #language { padding-inline: 8px; font-size: .8em; }
+}
 body.large .collection-actions { flex-wrap: wrap; }
 body.large .sort-control { min-width: 132px; flex-basis: auto; }
 @media (prefers-reduced-motion: reduce) {

@@ -44,14 +44,6 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 #language { font-size: .8em; border: 0; padding-inline: 8px; }
 .icon-button { width: 44px; height: 44px; padding: 10px !important; display: inline-grid; place-items: center; flex-shrink: 0; border: 0; border-radius: 50%; }
 .icon-button:hover { background: var(--panel); }
-.preferences { position: relative; }
-.preferences summary { list-style: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
-.preferences summary::-webkit-details-marker { display: none; }
-.preferences[open] summary, .preferences summary:hover { background: var(--panel); }
-.preferences-panel { position: absolute; top: calc(100% + 12px); inset-inline-end: 0; z-index: 10; width: 265px; padding: 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 18px 50px var(--shadow); }
-.preferences-panel p { margin: 0 0 12px; color: var(--muted); font-size: .85em; }
-.preferences-panel button { display: block; width: 100%; text-align: start; margin-top: 8px; }
-.preferences-panel button[aria-pressed=true] { color: var(--gold); border-color: var(--gold); }
 .hero { max-width: 1440px; margin: auto; padding: 36px 48px 40px; display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 64px; align-items: center; }
 .hero-copy { max-width: 560px; }
 .eyebrow { margin: 0 0 14px; color: var(--gold); font-size: .77em; font-weight: 500; }

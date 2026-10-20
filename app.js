@@ -192,9 +192,21 @@ function renderDance(){
   related.append(grid);body.append(related);root.replaceChildren(player,body);
   select(tab==='learn'?featured.find(v=>v.type==='teaching')||featured[0]:featured[0]);
 }
-function preferences(){const autoTheme=new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark';document.body.classList.toggle('light',read('theme',autoTheme)==='light');document.body.classList.toggle('large',read('large',true));$('textSize').setAttribute('aria-pressed',read('large',true));$('theme').textContent=document.body.classList.contains('light')?t('תצוגה כהה','Dark theme'):t('תצוגה בהירה','Light theme')}
+function preferences(){
+  const autoTheme=new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark';
+  const light=read('theme',autoTheme)==='light',large=read('large',true);
+  document.body.classList.toggle('light',light);document.body.classList.toggle('large',large);
+  const size=$('textSize'),sizeLabel=t('טקסט גדול','Larger text');
+  size.setAttribute('aria-pressed',large);size.setAttribute('aria-label',sizeLabel);
+  size.title=large?t('מעבר לטקסט בגודל רגיל','Use standard text size'):t('הגדלת הטקסט','Use larger text');
+  size.querySelector('.text-small').textContent=lang==='he'?'א':'a';
+  size.querySelector('.text-large').textContent=lang==='he'?'א':'A';
+  const theme=$('theme'),themeLabel=light?t('מעבר לתצוגה כהה','Switch to dark mode'):t('מעבר לתצוגה בהירה','Switch to light mode');
+  theme.setAttribute('aria-label',themeLabel);theme.title=themeLabel;
+  theme.querySelector('.sun-icon').hidden=light;theme.querySelector('.moon-icon').hidden=!light;
+}
 $('language').onclick=()=>{lang=lang==='he'?'en':'he';write('language',lang);language();syncFavorites();localizeControls()};$('theme').onclick=()=>{write('theme',document.body.classList.contains('light')?'dark':'light');preferences()};$('textSize').onclick=()=>{write('large',!read('large',true));preferences()};$('filterToggle').onclick=()=>{$('filters').hidden=!$('filters').hidden;$('filterToggle').setAttribute('aria-expanded',!$('filters').hidden)};
-document.addEventListener('click',e=>{for(const id of ['libraryMenu','preferences']){const menu=$(id);if(menu.open&&!menu.contains(e.target))menu.open=false}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){for(const id of ['libraryMenu','preferences']){const menu=$(id);if(menu.open){menu.open=false;menu.querySelector('summary').focus()}}}});
-function localizeControls(){const summary=$('preferences').querySelector('summary'),label=t('העדפות תצוגה','Display preferences');summary.setAttribute('aria-label',label);summary.title=label;$('closeDialog').setAttribute('aria-label',t('סגירה','Close'));$('closeDialog').title=t('סגירה','Close');$('filterToggle').setAttribute('aria-label',t('סינון לפי כוריאוגרף, סוג ריקוד ושנה','Filter by choreographer, formation and year'));$('tabs').setAttribute('aria-label',t('הספרייה','Collection'));$('sort').setAttribute('aria-label',t('סדר תצוגה','Sort by'));document.querySelector('.main-nav').setAttribute('aria-label',t('ניווט','Navigation'));syncFavorites()}
-document.addEventListener('click',e=>{if(!$('preferences').contains(e.target))$('preferences').open=false});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('preferences').open){$('preferences').open=false;$('preferences').querySelector('summary').focus()}});localizeControls();
+document.addEventListener('click',e=>{for(const id of ['libraryMenu']){const menu=$(id);if(menu.open&&!menu.contains(e.target))menu.open=false}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){for(const id of ['libraryMenu']){const menu=$(id);if(menu.open){menu.open=false;menu.querySelector('summary').focus()}}}});
+function localizeControls(){$('closeDialog').setAttribute('aria-label',t('סגירה','Close'));$('closeDialog').title=t('סגירה','Close');$('filterToggle').setAttribute('aria-label',t('סינון לפי כוריאוגרף, סוג ריקוד ושנה','Filter by choreographer, formation and year'));$('tabs').setAttribute('aria-label',t('הספרייה','Collection'));$('sort').setAttribute('aria-label',t('סדר תצוגה','Sort by'));document.querySelector('.main-nav').setAttribute('aria-label',t('ניווט','Navigation'));syncFavorites()}
+localizeControls();
 for(const id of ['formation','choreographer','decade','sort'])$(id).onchange=()=>{limit=18;render()};let timer;$('search').oninput=()=>{clearTimeout(timer);timer=setTimeout(()=>{limit=18;render()},180)};$('searchForm').onsubmit=e=>{e.preventDefault();clearTimeout(timer);limit=18;render()};$('reset').onclick=()=>{$('search').value='';for(const id of ['formation','choreographer','decade'])$(id).value='';limit=18;render()};$('more').onclick=()=>{const start=limit;limit+=18;render();$('grid').children[start]?.querySelector('button').focus({preventScroll:true})};$('closeDialog').onclick=()=>$('danceDialog').close();$('danceDialog').addEventListener('close',()=>{$('danceContent').replaceChildren();document.body.style.overflow='';current=null;navigationKeys=[];render()});language();
