@@ -127,7 +127,7 @@ function featuredRecordings(group){
   }
   return [...records.values()];
 }
-function collectionNeighbor(key,keys,step){const index=keys.indexOf(key);return index<0?null:keys[index+step]||null}
+function collectionNeighbor(key,keys,step){const index=keys.indexOf(key);return index<0?null:keys[((index+step)%keys.length+keys.length)%keys.length]||null}
 function chooseHero(collection,previous,random=Math.random){
   const demonstrations=collection.filter(g=>g.main.type==='dance');
   const pool=demonstrations.length?demonstrations:collection;
@@ -158,6 +158,7 @@ function spotlight(){const g=heroDance;if(!g){$('spotlight').replaceChildren();r
 function openDance(g,retainSequence=false,focusTarget='closeDialog'){
   if(!retainSequence||!navigationKeys.includes(g.key)){
     navigationKeys=filtered().map(d=>d.key);
+    if(navigationKeys.length<2)navigationKeys=[...dances].sort((a,b)=>b.main.vn-a.main.vn).map(d=>d.key);
     if(!navigationKeys.includes(g.key))navigationKeys.unshift(g.key);
   }
   current=g;recent=[g.key,...recent.filter(k=>k!==g.key)].slice(0,40);write('recent',recent);

@@ -31,7 +31,9 @@ vm.runInContext(`
     if (group.records.some(v => v.type === 'teaching') && !featured.some(v => v.type === 'teaching')) throw new Error('Lesson lost');
   }
   const keys = ['first', 'middle', 'last'];
-  if (collectionNeighbor('first', keys, -1) !== null || collectionNeighbor('last', keys, 1) !== null) throw new Error('Navigation boundary failed');
+  if (collectionNeighbor('first', keys, -1) !== 'last' || collectionNeighbor('last', keys, 1) !== 'first') throw new Error('Circular navigation boundary failed');
+  if (collectionNeighbor('only', ['only'], -1) !== 'only' || collectionNeighbor('only', ['only'], 1) !== 'only') throw new Error('Single-result navigation failed');
+  if (collectionNeighbor('missing', keys, 1) !== null || collectionNeighbor('missing', [], -1) !== null) throw new Error('Unknown navigation key failed');
   if (collectionNeighbor('middle', keys, -1) !== 'first' || collectionNeighbor('middle', keys, 1) !== 'last') throw new Error('Navigation order changed');
   const demoPool = window.testGroups.filter(g => g.main.type === 'dance');
   const firstHero = chooseHero(window.testGroups, null, () => 0);

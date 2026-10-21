@@ -20,7 +20,7 @@ for (const [theme, palette] of [['dark', dark], ['light', { ...dark, ...tokens('
 }
 assert.ok(css.includes('prefers-reduced-motion: reduce'));
 const light = tokens('body.light {');
-for (const [foreground, background] of [['hero-gold', 'hero-blue'], ['button-ink', 'button-gold']]) {
+for (const [foreground, background] of [['hero-gold', 'hero-blue'], ['button-ink', 'button-fill'], ['sky-on-blue', 'hero-blue']]) {
   assert.ok(contrast(light[foreground], light[background]) >= 4.5, `Light entrance contrast failed: ${foreground}`);
 }
 assert.ok(css.includes('forced-colors: active'));

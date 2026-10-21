@@ -1,3 +1,9 @@
+/* Keep the canvas and scrollbar edge continuous without reversing reading direction. */
+html { direction: ltr; background: #0b3d5c; scrollbar-color: #7fadc8 #0b3d5c; }
+[dir=rtl] body { direction: rtl; }
+html::-webkit-scrollbar { width: 15px; }
+html::-webkit-scrollbar-track { background: #0b3d5c; }
+html::-webkit-scrollbar-thumb { background: #7fadc8; border: 3px solid #0b3d5c; border-radius: 12px; }
 /* Visual system: quiet reading surfaces over a continuous, dance-inspired atmosphere. */
 :root {
   --bg: #090f20;
@@ -28,7 +34,7 @@ body.light {
   --panel: #fffefa;
   --text: #143247;
   --muted: #4b6070;
-  --gold: #73591d;
+  --gold: #245f91;
   --accent: #245f91;
   --action-ink: #ffffff;
   --border: #b7cfdf;
@@ -46,7 +52,8 @@ body.light {
   --header: #0b3a55;
   --hero-blue: #0b3d5c;
   --hero-gold: #e1ca8a;
-  --button-gold: #b89b49;
+  --button-fill: #9fd4f1;
+  --sky-on-blue: #a8d8f2;
   --button-ink: #102e42;
 }
 body {
@@ -209,10 +216,15 @@ body.light .card:focus-within { box-shadow: 0 0 10px var(--card-halo), 0 0 30px 
 dialog { background: var(--panel); border-radius: var(--radius-surface); box-shadow: 0 28px 100px #0007; }
 dialog::backdrop { background: #030e16d9; backdrop-filter: blur(8px); }
 .dialog-top { background: var(--panel); }
-.dialog-top { justify-content: space-between; }
-.player-language { min-height: 44px; padding: 8px 12px; font-size: .8em; line-height: 1.3; white-space: nowrap; background: var(--input); border-color: var(--control-border); }
-.room-top { flex-wrap: wrap; gap: 12px; }
-.room-header-controls { display: flex; align-items: center; gap: 10px; margin-inline-start: auto; }
+#danceDialog, .discovery-room { direction: ltr; scrollbar-gutter: stable; }
+[dir=rtl] #danceContent, [dir=rtl] .room-stage, [dir=rtl] .room-bottom, [dir=rtl] .swipe-hint { direction: rtl; }
+.dialog-top { direction: ltr; justify-content: space-between; }
+.player-language { width: 84px; flex-shrink: 0; min-height: 44px; padding: 8px 12px; font-size: .8em; line-height: 1.3; white-space: nowrap; background: var(--input); border-color: var(--control-border); }
+.room-top { direction: ltr; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+.room-header-controls { direction: ltr; display: flex; align-items: center; gap: 10px; }
+.room-close { width: 180px; padding: 10px 12px; font-size: .85em; line-height: 1.4; white-space: nowrap; }
+.room-header-controls .player-language, .room-close { height: 46px; min-height: 46px; }
+[dir=rtl] .room-top > div:first-child { direction: rtl; text-align: right; }
 .dialog-body { padding: 26px 32px 36px; }
 .details { line-height: 1.75; }
 .recordings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -231,6 +243,9 @@ dialog::backdrop { background: #030e16d9; backdrop-filter: blur(8px); }
 .dance-heading h2 { color: var(--gold); }
 dialog:not(.discovery-room) { border-color: var(--gold); }
 .discovery-room { background: radial-gradient(ellipse at 5% 0, var(--halo-teal), transparent 65%), var(--bg); border-radius: 0; }
+dialog:not(.discovery-room) { background: radial-gradient(ellipse at 0 30%, var(--accent-wash), transparent 65%), radial-gradient(ellipse at 100% 100%, var(--halo-plum), transparent 75%), var(--panel); }
+body.light dialog:not(.discovery-room) { background: url('assets/dance-ribbons-blue.svg') center 70% / 1100px 580px no-repeat, radial-gradient(ellipse at 0 20%, #8dcdf033, transparent 65%), radial-gradient(ellipse at 100% 100%, #bfdff24d, transparent 75%), var(--panel); }
+body.light .discovery-room { background: url('assets/dance-ribbons-blue.svg') center 360px / 1440px 660px no-repeat, radial-gradient(ellipse at 0 0, #9fd4f159, transparent 65%), radial-gradient(ellipse at 100% 100%, #c4e4f34d, transparent 75%), var(--bg); }
 .room-screen { border: 1px solid var(--border); border-radius: var(--radius-surface); }
 .room-bottom .primary { background: var(--accent); color: var(--action-ink); }
 @media (hover: hover) {
@@ -335,27 +350,30 @@ body.light::before { opacity: .2; }
 body.light .hero { position: relative; isolation: isolate; max-width: none; padding-inline: max(48px, calc((100% - 1344px) / 2)); }
 body.light .hero::before { content: ''; position: absolute; z-index: -1; pointer-events: none; inset: -120px 0 -180px; background: radial-gradient(ellipse at 50% 90%, #68bbee35, transparent 65%), url('assets/limestone-wash.svg') right top / 1000px 100% no-repeat, url('assets/dance-ribbons.svg?v=sky-blue-20261021') center calc(100% + 120px) / 1440px 660px no-repeat, linear-gradient(180deg, var(--hero-blue) 0%, var(--hero-blue) calc(100% - 65px), var(--bg) 100%); }
 [dir=rtl] body.light .hero::before { transform: scaleX(-1); }
-body.light .site-header { border-color: #b6a36d; }
-body.light .site-header .brand { color: var(--hero-gold); }
-body.light .site-header .brand-mark { color: var(--hero-gold); }
-body.light .site-header .header-control, body.light .site-header .library-menu summary { color: var(--hero-gold); background: #103f59; border-color: #b6a36d; }
-body.light .site-header #language { color: var(--button-ink); background: var(--button-gold); }
-body.light .site-header .text-size-control[aria-pressed=true] { background: #22566b; }
-body.light .site-header .header-control:hover, body.light .site-header .library-menu summary:hover { background: #22566b; }
+body.light .site-header { border-color: #79aac8; }
+body.light .site-header .brand { color: var(--sky-on-blue); }
+body.light .site-header .brand-mark { color: var(--sky-on-blue); }
+body.light .site-header .header-control, body.light .site-header .library-menu summary { color: var(--sky-on-blue); background: #103f59; border-color: #79aac8; }
+body.light .site-header #language { color: var(--button-ink); background: var(--button-fill); }
+body.light .site-header .text-size-control[aria-pressed=true] { background: #225a7c; }
+body.light .site-header .header-control:hover, body.light .site-header .library-menu summary:hover { background: #225a7c; }
 body.light .hero h1 { color: var(--hero-gold); }
-body.light .hero .surprise-action { color: #f5e9bf; background: #0e6270; border-color: var(--hero-gold); }
-body.light .hero .surprise-action:hover { background: #154654; }
-body.light .hero-dance { border: 2px solid #dfcb8d; background: var(--panel); box-shadow: 0 0 28px #e8c97542, 0 14px 34px #031c3240; }
-body.light .primary, body.light .more, body.light .play-disc, body.light .thumb .play-disc, body.light .recordings button[aria-pressed=true], body.light .dance-navigation button { background: var(--button-gold); color: var(--button-ink); }
-body.light .primary:hover, body.light .more:hover { background: #d3b965; }
+body.light .hero .surprise-action { color: var(--sky-on-blue); background: #174d6b; border-color: var(--sky-on-blue); }
+body.light .hero .surprise-action:hover { background: #123e58; }
+body.light .hero-dance { border: 2px solid #a7d8ef; background: var(--panel); box-shadow: 0 0 28px #86c8f342, 0 14px 34px #031c3240; }
+body.light .primary, body.light .more, body.light .play-disc, body.light .thumb .play-disc, body.light .recordings button[aria-pressed=true], body.light .dance-navigation button { background: var(--button-fill); color: var(--button-ink); }
+body.light .primary:hover, body.light .more:hover { background: #bfe5f8; }
 body.light .collection { position: relative; z-index: 1; border-top: 0; }
 body.light .section-heading h2 { color: var(--hero-gold); }
-body.light .search-submit { background: var(--button-gold); color: var(--button-ink); }
+body.light .search-submit { background: var(--button-fill); color: var(--button-ink); }
 body.light .card, body.light .card:nth-child(3n + 2), body.light .card:nth-child(3n) { --card-edge: #34648c; --card-edge-alt: #7fa8c0; --card-halo: #4389b626; }
-body.light .favorite { color: #806522; }
-body.light .favorite[aria-pressed=true] { color: #73591d; }
-body.light .room-bottom .primary { background: var(--button-gold); color: var(--button-ink); }
+body.light .favorite { color: #276995; }
+body.light .favorite[aria-pressed=true] { color: #174d7b; }
+body.light .room-bottom .primary { background: var(--button-fill); color: var(--button-ink); }
 @media (max-width: 760px) {
+  .room-top { grid-template-columns: 1fr; }
+  .room-header-controls { justify-self: end; }
+  .room-close { width: 170px; }
   body.light .hero { padding-inline: 10px; }
   .collection-actions, body.large .collection-actions { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 10px; width: 100%; }
   .sort-control, body.large .sort-control, #filterToggle { min-width: 0; width: 100%; padding-inline: 12px; font-size: .95em; gap: 8px; }
