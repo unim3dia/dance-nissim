@@ -52,9 +52,10 @@ body.light {
   --header: #0b3a55;
   --hero-blue: #0b3d5c;
   --hero-gold: #e1ca8a;
-  --button-fill: #9fd4f1;
+  --button-fill: #0068bf;
+  --button-hover: #0057a3;
   --sky-on-blue: #a8d8f2;
-  --button-ink: #102e42;
+  --button-ink: #ffffff;
 }
 body {
   position: relative;
@@ -344,6 +345,35 @@ body.large .sort-control { min-width: 132px; flex-basis: auto; }
 .dialog-body > .autoplay-toggle { margin-top: 0; }
 .room-info > .external { display: block; width: fit-content; }
 
+/* Decoration surrounds the viewing card; its reading and control surfaces stay quiet. */
+.dance-stage-card, .room-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 18px 48px var(--shadow), 0 0 24px var(--frame-glow); touch-action: pan-y; transform: translateX(var(--swipe-x, 0px)); transition: transform .2s ease; }
+.dance-stage-card { margin: 16px 24px 28px; overflow: hidden; }
+.dance-stage-card .dialog-body { background: var(--panel); padding-bottom: 18px; }
+.dance-stage-card .swipe-hint { margin-bottom: 0; }
+#danceContent > .related { padding: 0 32px 32px; }
+.room-stage { padding: 24px; gap: 28px; }
+.room-info { min-width: 0; animation: none; }
+.room-info .room-actions { gap: 10px; }
+.room-info .recordings { flex: 1 1 100%; }
+.dance-navigation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1fr); gap: 10px; margin: 16px 0; padding: 0; border: 0; background: var(--panel); }
+.dance-navigation button { min-width: 0; min-height: 58px; margin: 0; padding: 10px 8px; font-size: .8em; line-height: 1.4; gap: 6px; }
+.dance-navigation .autoplay-toggle { background: var(--input); color: var(--muted); border: 1px solid var(--control-border); }
+.dance-navigation .autoplay-toggle[aria-pressed=true] { background: var(--input); color: var(--accent); border-color: var(--accent); }
+.autoplay-toggle::before { flex-shrink: 0; }
+.is-swiping { transition: none; user-select: none; }
+@media (max-width: 1100px) { .room-stage { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+  .dance-stage-card { margin: 12px 10px 26px; border-radius: 16px; }
+  .dance-stage-card .dialog-body { padding: 18px 12px; }
+  #danceContent > .related { padding: 0 20px 24px; }
+  .room-stage { padding: 12px; gap: 20px; }
+  .room-info h2 { font-size: 32px; }
+  .dance-navigation { gap: 6px; }
+  .dance-navigation button { font-size: 15px; min-height: 64px; padding: 8px 5px; }
+  .dance-navigation .navigation-arrow, .dance-navigation .autoplay-toggle::before { display: none; }
+  .room-bottom > select { flex: 0 1 auto; }
+}
+
 /* Blue-and-gold entrance; the catalog remains a white reading surface. */
 body.light { background: radial-gradient(ellipse 650px 800px at 0 1100px, #3e9cd445, transparent 80%), radial-gradient(ellipse 700px 700px at 100% 2200px, #b8dff42e, transparent 80%), var(--bg); }
 body.light::before { opacity: .2; }
@@ -362,7 +392,7 @@ body.light .hero .surprise-action { color: var(--sky-on-blue); background: #174d
 body.light .hero .surprise-action:hover { background: #123e58; }
 body.light .hero-dance { border: 2px solid #a7d8ef; background: var(--panel); box-shadow: 0 0 28px #86c8f342, 0 14px 34px #031c3240; }
 body.light .primary, body.light .more, body.light .play-disc, body.light .thumb .play-disc, body.light .recordings button[aria-pressed=true], body.light .dance-navigation button { background: var(--button-fill); color: var(--button-ink); }
-body.light .primary:hover, body.light .more:hover { background: #bfe5f8; }
+body.light .primary:hover, body.light .more:hover { background: var(--button-hover); color: var(--button-ink); }
 body.light .collection { position: relative; z-index: 1; border-top: 0; }
 body.light .section-heading h2 { color: var(--hero-gold); }
 body.light .search-submit { background: var(--button-fill); color: var(--button-ink); }
@@ -370,6 +400,8 @@ body.light .card, body.light .card:nth-child(3n + 2), body.light .card:nth-child
 body.light .favorite { color: #276995; }
 body.light .favorite[aria-pressed=true] { color: #174d7b; }
 body.light .room-bottom .primary { background: var(--button-fill); color: var(--button-ink); }
+body.light .dance-navigation .autoplay-toggle { background: var(--input); color: var(--muted); border-color: var(--control-border); }
+body.light .dance-navigation .autoplay-toggle[aria-pressed=true] { color: var(--accent); border-color: var(--accent); }
 @media (max-width: 760px) {
   .room-top { grid-template-columns: 1fr; }
   .room-header-controls { justify-self: end; }
@@ -383,7 +415,7 @@ body.light .room-bottom .primary { background: var(--button-fill); color: var(--
   .sort-control, body.large .sort-control, #filterToggle { padding-inline: 6px; font-size: 16.5px; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  button, a, summary, .card { transition: none; }
+  button, a, summary, .card, .dance-stage-card, .room-stage { transition: none; }
   .card:hover, .card-watch:hover img { transform: none; }
 }
 @media (forced-colors: active) {

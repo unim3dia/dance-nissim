@@ -49,6 +49,9 @@ const context = vm.createContext({
 });
 vm.runInContext(source.slice(source.indexOf('function renderDance(){'), source.indexOf('function updateLanguageControl')), context);
 context.renderDance();
+assert.equal(content.querySelector('.dance-stage-card').querySelector('.player'), content.querySelector('.player'));
+assert.deepEqual(content.querySelector('.dance-navigation').children.map(n => n.className), ['', 'autoplay-toggle', '']);
+assert.equal(content.querySelector('.related').parent, content, 'Keep exploring must be outside the floating viewing card');
 assert.match(content.querySelector('iframe').src, /dance-id/);
 assert.match(content.querySelector('iframe').src, /autoplay=1/);
 content.querySelector('.recordings').children[1].onclick();
@@ -88,10 +91,10 @@ for (const lang of ['he', 'en']) {
   }
 }
 assert.ok(!/מפגש עם האוסף|FROM THE COLLECTION/.test(discovery), 'Discovery counter text returned');
-assert.ok(discovery.includes('info.append(actions,auto,external)'), 'Autoplay must remain beside the video choices');
+assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,external)'), 'Autoplay must sit between previous and next, below video choices');
 console.log('Verified autoplay defaults on, saved opt-out is respected, and both languages show its state.');
 const navigation = discovery.split('\n').filter(line => /^function (nextDiscovery|previousDiscovery)\(/.test(line)).join('\n');
-const navigationContext = vm.createContext({ deck: ['first', 'middle', 'last'], position: 0, showDiscovery: () => {} });
+const navigationContext = vm.createContext({ deck: ['first', 'middle', 'last'], position: 0, showDiscovery: () => {}, animateDanceCard: () => {}, room: { querySelector: () => null } });
 vm.runInContext(navigation, navigationContext);
 navigationContext.previousDiscovery();
 assert.equal(navigationContext.position, 2, 'Discovery previous must wrap to the last dance');
@@ -106,3 +109,17 @@ navigationContext.previousDiscovery();
 navigationContext.nextDiscovery();
 assert.equal(navigationContext.position, 0, 'Empty discovery navigation must be harmless');
 console.log('Verified circular discovery navigation in both directions.');
+const swipeCard = new Node('section');
+swipeCard.style = { removeProperty() {}, setProperty() {} };
+swipeCard.classList = { add() {}, remove() {} };
+const steps = [];
+context.bindDanceSwipe(swipeCard, step => steps.push(step));
+const pointer = (x, y = 0, interactive = false) => ({ clientX: x, clientY: y, pointerId: 1, button: 0, target: { closest: () => interactive } });
+swipeCard.onpointerdown(pointer(200)); swipeCard.onpointerup(pointer(100));
+swipeCard.onpointerdown(pointer(100)); swipeCard.onpointerup(pointer(200));
+swipeCard.onpointerdown(pointer(100)); swipeCard.onpointerup(pointer(120));
+swipeCard.onpointerdown(pointer(100)); swipeCard.onpointermove(pointer(110, 100)); swipeCard.onpointerup(pointer(200, 110));
+swipeCard.onpointerdown(pointer(100, 0, true)); swipeCard.onpointerup(pointer(200));
+swipeCard.onpointerdown(pointer(100)); swipeCard.onpointercancel(); swipeCard.onpointerup(pointer(200));
+assert.deepEqual(steps, [1, -1], 'Only deliberate horizontal swipes on non-interactive card surfaces should navigate');
+console.log('Verified bidirectional card swipes, vertical scrolling, interactive controls, and cancellation.');

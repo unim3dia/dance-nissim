@@ -191,28 +191,42 @@ function renderDance(){
   }
   recordings.hidden=featured.length<2;
   const navigation=element('nav','dance-navigation');navigation.setAttribute('aria-label',t('דפדוף בספרייה','Browse the collection'));
+  const navigate=step=>{const next=groups.get(collectionNeighbor(g.key,navigationKeys,step));if(next){openDance(next,true,step<0?'previousCollectionDance':'nextCollectionDance');animateDanceCard(root.querySelector('.dance-stage-card'),step)}};
   for(const [step,id,label] of [[-1,'previousCollectionDance',t('הריקוד הקודם','Previous dance')],[1,'nextCollectionDance',t('הריקוד הבא','Next dance')]]){
     const key=collectionNeighbor(g.key,navigationKeys,step),button=element('button','',label),arrow=element('span','navigation-arrow',step<0?'←':'→');
     button.id=id;button.disabled=!key;arrow.setAttribute('aria-hidden','true');
     if(step<0)button.prepend(arrow);else button.append(arrow);
-    button.onclick=()=>{const next=groups.get(key);if(next)openDance(next,true,id)};
+    button.onclick=()=>navigate(step);
     navigation.append(button);
+    if(step<0)navigation.append(createAutoplayControl());
   }
-  body.append(headingRow,details,recordings,createAutoplayControl(),navigation);
+  body.append(headingRow,details,recordings,navigation,element('p','swipe-hint',t('החליקו על אזור הכותרת לשני הכיוונים כדי לגלות עוד ריקודים','Swipe the title area in either direction to explore more dances')));
   const related=element('section','related');related.append(element('h3','',t('ממשיכים לגלות','Keep exploring')));
   const grid=element('div','grid');
   const ranked=dances.filter(d=>d.key!==g.key).map(d=>({g:d,score:(g.main.choreoKey&&d.main.choreoKey===g.main.choreoKey?5:0)+(g.main.style&&d.main.style===g.main.style?2:0)+(g.main.year&&d.main.year&&Math.abs(d.main.year-g.main.year)<10?1:0)})).sort((a,b)=>b.score-a.score||b.g.main.vn-a.g.main.vn).slice(0,6);
   ranked.forEach(({g:d})=>{const b=element('button');b.append(image(d.main),element('p','',title(d)));b.onclick=()=>openDance(d,true);grid.append(b)});
-  related.append(grid);body.append(related);
+  related.append(grid);
   if(reuse){
     root.querySelector('.dialog-body').replaceWith(body);
+    root.querySelector('.related').replaceWith(related);
+    bindDanceSwipe(root.querySelector('.dance-stage-card'),navigate);
     const selected=g.records.find(v=>v.id===player.dataset.recordingId)||g.main;
     player.querySelector('iframe').title=title(g)+' · '+kind(selected);
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===selected.id));
   }else{
-    root.replaceChildren(player,body);
+    const stage=element('section','dance-stage-card');stage.append(player,body);bindDanceSwipe(stage,navigate);
+    root.replaceChildren(stage,related);
     select(tab==='learn'?featured.find(v=>v.type==='teaching')||featured[0]:featured[0]);
   }
+}
+function animateDanceCard(card,step){if(!matchMedia('(prefers-reduced-motion: reduce)').matches)card?.animate?.([{transform:`translateX(${step*36}px)`,opacity:.65},{transform:'translateX(0)',opacity:1}],{duration:260,easing:'cubic-bezier(.2,.7,.2,1)'})}
+function bindDanceSwipe(card,navigate){
+  let start=null;
+  const reset=()=>{start=null;card.style.removeProperty('--swipe-x');card.classList.remove('is-swiping')};
+  card.onpointerdown=e=>{if(e.isPrimary===false||e.button!==0||e.target.closest('button,a,input,select,iframe'))return;start={x:e.clientX,y:e.clientY,id:e.pointerId};card.setPointerCapture?.(e.pointerId)};
+  card.onpointermove=e=>{if(!start||e.pointerId!==start.id)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dy)>30&&Math.abs(dy)>Math.abs(dx)){reset();return}if(Math.abs(dx)>12){card.classList.add('is-swiping');card.style.setProperty('--swipe-x',`${Math.max(-90,Math.min(90,dx*.45))}px`)}};
+  card.onpointerup=e=>{if(!start||e.pointerId!==start.id)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;reset();if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.4)navigate(dx<0?1:-1)};
+  card.onpointercancel=reset;card.onlostpointercapture=reset;
 }
 function updateLanguageControl(button){button.textContent=lang==='he'?'English':'עברית';const label=t('Switch to English','מעבר לעברית');button.setAttribute('aria-label',label);button.title=label}
 function languageControl(){const button=element('button','player-language');button.type='button';button.dataset.languageSwitch='';updateLanguageControl(button);button.onclick=changeLanguage;return button}
