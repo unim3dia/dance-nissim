@@ -114,7 +114,8 @@ for (const lang of ['he', 'en']) {
   }
 }
 assert.ok(!/מפגש עם האוסף|FROM THE COLLECTION/.test(discovery), 'Discovery counter text returned');
-assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,autoplayNote())'), 'Autoplay must sit between previous and next, below video choices');
+assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation)'), 'Autoplay must sit between previous and next, below video choices');
+for (const text of [source, discovery]) assert.ok(!/autoplayNote|swipe-hint/.test(text), 'Removed helper messages must not return');
 assert.ok(discovery.includes('createRelatedDances(g,') && discovery.includes('else room.append(related)'), 'Discovery must include Keep exploring outside the viewing card');
 assert.ok(!discovery.includes('Open on YouTube'), 'Discovery must not add a separate YouTube link');
 console.log('Verified autoplay defaults on, saved opt-out is respected, and both languages show its state.');
@@ -155,11 +156,7 @@ const related = context.createRelatedDances(group, dance => { selected = dance; 
 assert.equal(related.querySelector('.grid').children.length, 1, 'Related dances must exclude the current dance');
 related.querySelector('.grid').children[0].onclick();
 assert.equal(selected, another, 'Keep exploring must open the selected dance');
-context.autoPlay = true;
-assert.equal(context.autoplayNote().hidden, false);
-context.autoPlay = false;
-assert.equal(context.autoplayNote().hidden, true);
-console.log('Verified shared related-dance selection and autoplay guidance visibility.');
+console.log('Verified shared related-dance selection and removal of helper messages.');
 context.room = new Node('dialog');
 context.deck = [group, another];
 context.position = 0;
