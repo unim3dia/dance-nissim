@@ -89,6 +89,7 @@ const assignCredit=(v,value)=>{const en=canonicalCredit(value),he=creditHebrew[e
 const assignLocalizedCredit=(v,credit)=>{const en=canonicalCredit(credit.en);v.choreoKey=en;v.choreoEn=credit.displayEn||en;v.choreoHe=credit.he||creditHebrew[en]||catalogHebrew.get(en)||''};
 // Resolve credits before grouping so different choreographies with the same title stay separate.
 for(const v of window.CATALOG){const researched=researchedCredits[v.id],credit=videoCredits[v.id];if(researched)assignLocalizedCredit(v,researched);else if(credit)assignCredit(v,credit);if(manualCredits[v.he])assignCredit(v,manualCredits[v.he])}
+applyPairingReview(window.CATALOG);
 const titleCredits=new Map();
 for(const v of window.CATALOG){if(!titleCredits.has(v.he))titleCredits.set(v.he,new Set());if(v.choreoKey)titleCredits.get(v.he).add(canonicalCredit(v.choreoKey))}
 for(const v of window.CATALOG){const key=titleCredits.get(v.he).size>1?`${v.he}::${canonicalCredit(v.choreoKey)||v.id}`:v.he;if(!groups.has(key))groups.set(key,{key,records:[]});groups.get(key).records.push(v)}
@@ -113,19 +114,18 @@ for(const group of groups.values()){
   }
 }
 const renamedKeys=new Map();
-for(const g of groups.values())for(const v of g.records){const previous=v.previousTitle==='ללא כותרת'?v.id:v.previousTitle||v.he;if(previous!==g.key){if(!renamedKeys.has(previous))renamedKeys.set(previous,new Set());renamedKeys.get(previous).add(g.key)}}
+for(const g of groups.values())for(const v of g.records){const previous=v.previousTitle==='ללא כותרת'?v.id:v.previousTitle||v.he;for(const key of new Set([previous,v.previousGroupKey].filter(Boolean))){if(key!==g.key){if(!renamedKeys.has(key))renamedKeys.set(key,new Set());renamedKeys.get(key).add(g.key)}}}
 for(const key of [...saved]){const replacements=renamedKeys.get(key);if(replacements?.size===1){saved.delete(key);saved.add([...replacements][0])}}
 recent=[...new Set(recent.map(key=>renamedKeys.get(key)?.size===1?[...renamedKeys.get(key)][0]:key))];write('favorites',[...saved]);write('recent',recent);
 const preferredDemo={'אישה על החוף':'3sNhV4J9Awo','הצריף הרעוע':'-VT9BJBqX-8'};
-const dances=[...groups.values()].map(g=>{g.records.sort((a,b)=>b.vn-a.vn);g.main=g.records.find(v=>v.id===preferredDemo[g.records[0].he])||g.records.find(v=>v.type==='dance')||g.records[0];g.search=[...g.records.map(v=>`${v.he} ${v.en} ${v.rom||''}`),g.main.choreoHe,g.main.choreoEn].filter(Boolean).join(' ');return g});
+const preferredLesson={'הצריף הרעוע':'XWN9v6t3NuI'};
+const dances=[...groups.values()].map(g=>{g.records.sort((a,b)=>b.vn-a.vn);g.main=g.records.find(v=>v.id===preferredDemo[g.records[0].he])||g.records.find(v=>v.type==='dance')||g.records.find(v=>v.type==='live')||g.records[0];g.search=[...g.records.map(v=>`${v.he} ${v.en} ${v.rom||''} ${v.rawHe||''} ${v.rawEn||''}`),g.main.choreoHe,g.main.choreoEn].filter(Boolean).join(' ');return g});
 // Feature one recording per kind without deleting alternate archival uploads.
 function featuredRecordings(group){
-  const records=new Map();
-  for(const record of [group.main,...group.records]){
-    const kind=record.type==='teaching'?'teaching':record.type==='live'?'live':'dance';
-    if(!records.has(kind))records.set(kind,record);
-  }
-  return [...records.values()];
+  const ordered=[group.main,...group.records];
+  const watch=ordered.find(v=>v.type==='dance')||ordered.find(v=>v.type==='live');
+  const learn=ordered.find(v=>v.id===preferredLesson[group.main.he]&&v.type==='teaching')||ordered.find(v=>v.type==='teaching');
+  return [watch,learn].filter(Boolean);
 }
 function collectionNeighbor(key,keys,step){const index=keys.indexOf(key);return index<0?null:keys[((index+step)%keys.length+keys.length)%keys.length]||null}
 function chooseHero(collection,previous,random=Math.random){
@@ -149,7 +149,7 @@ function icon(type){const svg=document.createElementNS('http://www.w3.org/2000/s
 function syncFavorites(){document.querySelectorAll('[data-save-key]').forEach(b=>{const active=saved.has(b.dataset.saveKey);b.setAttribute('aria-pressed',active);const label=t(active?'ביטול שמירה: ':'שמירת הריקוד: ',active?'Unsave dance: ':'Save dance: ')+b.dataset.danceTitle;b.setAttribute('aria-label',label);b.title=label})}
 function image(v){const img=element('img');img.src=`https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/hqdefault.jpg`;img.alt='';img.loading='lazy';img.addEventListener('error',()=>{img.style.visibility='hidden'},{once:true});return img}
 function favorite(g){const b=element('button','favorite icon-button');b.type='button';b.dataset.saveKey=g.key;b.dataset.danceTitle=title(g);b.append(icon('heart'));b.setAttribute('aria-pressed',saved.has(g.key));const label=t('שמירת הריקוד: ','Save dance: ')+title(g);b.setAttribute('aria-label',label);b.title=label;b.onclick=()=>{saved.has(g.key)?saved.delete(g.key):saved.add(g.key);write('favorites',[...saved]);syncFavorites();if(tab==='saved')render()};return b}
-function card(g){const article=element('article','card'),b=element('button','card-watch');b.setAttribute('aria-label',t('פתיחת הריקוד: ','Explore dance: ')+title(g));const thumb=element('div','thumb'),play=element('span','play-disc');play.append(icon('play'));thumb.append(image(g.main),play);b.append(thumb);b.onclick=()=>openDance(g);const heading=element('div','card-heading'),h3=element('h3'),titleButton=element('button','card-title',title(g));titleButton.onclick=()=>openDance(g);h3.append(titleButton);heading.append(h3,favorite(g));article.append(b,heading,element('p','',name(g.main)),element('p','kind',[shape(g.main),g.records.some(v=>v.type==='teaching')?t('כולל לימוד','Teaching available'):'',featuredRecordings(g).length>1?t(`${featuredRecordings(g).length} הקלטות`,`${featuredRecordings(g).length} recordings`):''].filter(Boolean).join(' · ')));return article}
+function card(g){const article=element('article','card'),b=element('button','card-watch');b.setAttribute('aria-label',t('פתיחת הריקוד: ','Explore dance: ')+title(g));const thumb=element('div','thumb'),play=element('span','play-disc');play.append(icon('play'));thumb.append(image(g.main),play);b.append(thumb);b.onclick=()=>openDance(g);const heading=element('div','card-heading'),h3=element('h3'),titleButton=element('button','card-title',title(g));titleButton.onclick=()=>openDance(g);h3.append(titleButton);heading.append(h3,favorite(g));article.append(b,heading,element('p','',name(g.main)));if(shape(g.main))article.append(element('p','kind',shape(g.main)));return article}
 function options(id,values){const select=$(id),value=select.value;select.replaceChildren(...values.map(([key,label])=>{const o=element('option','',label);o.value=key;return o}));if([...select.options].some(o=>o.value===value))select.value=value}
 function language(){document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';document.querySelectorAll('[data-he]').forEach(el=>el.textContent=el.dataset[lang]);$('language').textContent=lang==='he'?'English':'עברית';$('search').placeholder=t('שם ריקוד או כוריאוגרף','Dance name or choreographer');options('formation',[['',t('כל הסוגים','All formations')],['m',t('מעגלים','Circles')],['c',t('זוגות','Couples')],['s',t('שורות','Lines')]]);const people=new Map(CATALOG.filter(v=>v.choreoKey).map(v=>[v.choreoKey,name(v)]));options('choreographer',[['',t('כל הכוריאוגרפים','All choreographers')],...[...people].sort((a,b)=>a[1].localeCompare(b[1],lang))]);options('decade',[['',t('כל השנים','All years')],...[...new Set(CATALOG.filter(v=>v.year).map(v=>Math.floor(v.year/10)*10))].sort((a,b)=>b-a).map(y=>[String(y),`${y}–${y+9}`])]);options('sort',[['popular',t('הנצפים ביותר','Most watched')],['az',t('לפי שם','Alphabetical')],['new',t('שנה: חדש לישן','Year: newest first')],['old',t('שנה: ישן לחדש','Year: oldest first')]]);render();spotlight();preferences();if(current)renderDance()}
 function filtered(){const query=normalize($('search').value).split(' ').filter(Boolean);let list=dances.filter(g=>{if(tab==='saved'&&!saved.has(g.key))return false;if(tab==='recent'&&!recent.includes(g.key))return false;if(!query.every(q=>normalize(g.search).includes(q)))return false;return g.records.some(v=>(tab!=='learn'||v.type==='teaching')&&(!$('formation').value||v.style===$('formation').value)&&(!$('choreographer').value||v.choreoKey===$('choreographer').value)&&(!$('decade').value||Math.floor(v.year/10)*10===Number($('decade').value)))});const year=g=>g.records.find(v=>v.year)?.year;return list.sort((a,b)=>tab==='recent'?recent.indexOf(a.key)-recent.indexOf(b.key):$('sort').value==='az'?title(a).localeCompare(title(b),lang):$('sort').value==='new'?(year(b)||0)-(year(a)||0):$('sort').value==='old'?(year(a)||9999)-(year(b)||9999):b.main.vn-a.main.vn)}
@@ -183,7 +183,7 @@ function renderDance(){
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===v.id));
   }
   for(const v of featured){
-    const label=v.type==='teaching'?t('ללמוד את הצעדים','Learn the steps'):v.type==='live'?t('מההרקדה','From the dance floor'):t('לצפות בריקוד','Watch the dance');
+    const label=v.type==='teaching'?t('ללמוד את הצעדים','Learn the steps'):t('לצפות בריקוד','Watch the dance');
     const button=element('button','',label);button.dataset.id=v.id;button.onclick=()=>select(v);recordings.append(button);
   }
   recordings.hidden=featured.length<2;

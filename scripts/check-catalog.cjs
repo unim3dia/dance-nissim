@@ -8,7 +8,7 @@ const context = vm.createContext({
   window: {},
   localStorage: { getItem: () => null, setItem: () => {} }
 });
-for (const file of ['catalog.js', 'credits.js', 'research-data.js']) {
+for (const file of ['catalog.js', 'credits.js', 'research-data.js', 'pairing-data.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context);
 }
 const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
@@ -26,9 +26,11 @@ vm.runInContext(`
   for (const group of window.testGroups) {
     const featured = featuredRecordings(group);
     if (featured[0].id !== group.main.id) throw new Error('Preferred recording changed');
-    const kinds = featured.map(v => v.type === 'teaching' ? 'teaching' : v.type === 'live' ? 'live' : 'dance');
+    const kinds = featured.map(v => v.type === 'teaching' ? 'teaching' : 'dance');
     if (new Set(kinds).size !== kinds.length) throw new Error('Duplicate featured recording kind');
     if (group.records.some(v => v.type === 'teaching') && !featured.some(v => v.type === 'teaching')) throw new Error('Lesson lost');
+    if (group.records.some(v => v.type === 'dance' || v.type === 'live') && !featured.some(v => v.type !== 'teaching')) throw new Error('Watch option lost');
+    if (featured.length > 2) throw new Error('Duplicate watch/learn buttons returned');
   }
   const keys = ['first', 'middle', 'last'];
   if (collectionNeighbor('first', keys, -1) !== 'last' || collectionNeighbor('last', keys, 1) !== 'first') throw new Error('Circular navigation boundary failed');
