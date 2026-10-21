@@ -42,9 +42,10 @@ const context = vm.createContext({
   kind: record => record.type,
   name: () => 'Creator', shape: () => 'Couples',
   favorite: () => new Node('button'),
+  image: () => new Node('img'),
   featuredRecordings: () => [demo, lesson],
   collectionNeighbor: () => null,
-  createAutoplayControl: () => new Node('button', 'autoplay-toggle'),
+  createAutoplayControl: onEnable => { const button = new Node('button', 'autoplay-toggle'); button.onEnable = onEnable; return button; },
   encodeURIComponent
 });
 vm.runInContext(source.slice(source.indexOf('function renderDance(){'), source.indexOf('function updateLanguageControl')), context);
@@ -54,6 +55,7 @@ assert.deepEqual(content.querySelector('.dance-navigation').children.map(n => n.
 assert.equal(content.querySelector('.related').parent, content, 'Keep exploring must be outside the floating viewing card');
 assert.match(content.querySelector('iframe').src, /dance-id/);
 assert.match(content.querySelector('iframe').src, /autoplay=1/);
+assert.match(content.querySelector('iframe').src, /playsinline=1/);
 content.querySelector('.recordings').children[1].onclick();
 const lessonFrame = content.querySelector('iframe');
 assert.match(lessonFrame.src, /lesson-id/);
@@ -68,6 +70,9 @@ assert.equal(content.querySelector('.recordings').children[0].attributes['aria-p
 context.autoPlay = false;
 content.querySelector('.recordings').children[1].onclick();
 assert.ok(!content.querySelector('iframe').src.includes('autoplay=1'), 'Saved autoplay opt-out was ignored by the player');
+context.autoPlay = true;
+content.querySelector('.autoplay-toggle').onEnable();
+assert.match(content.querySelector('iframe').src, /lesson-id.*autoplay=1/, 'Enabling autoplay must start the selected recording');
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(html, /id="dialogLanguage"[^>]*data-language-switch/);
@@ -91,7 +96,9 @@ for (const lang of ['he', 'en']) {
   }
 }
 assert.ok(!/מפגש עם האוסף|FROM THE COLLECTION/.test(discovery), 'Discovery counter text returned');
-assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,external)'), 'Autoplay must sit between previous and next, below video choices');
+assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,autoplayNote(),external)'), 'Autoplay must sit between previous and next, below video choices');
+assert.ok(discovery.includes('createRelatedDances(g,') && discovery.includes('else room.append(related)'), 'Discovery must include Keep exploring outside the viewing card');
+assert.ok(discovery.includes('playsinline=1'), 'Discovery must request inline playback on mobile');
 console.log('Verified autoplay defaults on, saved opt-out is respected, and both languages show its state.');
 const navigation = discovery.split('\n').filter(line => /^function (nextDiscovery|previousDiscovery)\(/.test(line)).join('\n');
 const navigationContext = vm.createContext({ deck: ['first', 'middle', 'last'], position: 0, showDiscovery: () => {}, animateDanceCard: () => {}, room: { querySelector: () => null } });
@@ -123,3 +130,43 @@ swipeCard.onpointerdown(pointer(100, 0, true)); swipeCard.onpointerup(pointer(20
 swipeCard.onpointerdown(pointer(100)); swipeCard.onpointercancel(); swipeCard.onpointerup(pointer(200));
 assert.deepEqual(steps, [1, -1], 'Only deliberate horizontal swipes on non-interactive card surfaces should navigate');
 console.log('Verified bidirectional card swipes, vertical scrolling, interactive controls, and cancellation.');
+const another = { key: 'another-dance', main: { ...demo, id: 'another-id' } };
+another.records = [another.main];
+let selected;
+const related = context.createRelatedDances(group, dance => { selected = dance; }, [group, another]);
+assert.equal(related.querySelector('.grid').children.length, 1, 'Related dances must exclude the current dance');
+related.querySelector('.grid').children[0].onclick();
+assert.equal(selected, another, 'Keep exploring must open the selected dance');
+context.autoPlay = true;
+assert.equal(context.autoplayNote().hidden, false);
+context.autoPlay = false;
+assert.equal(context.autoplayNote().hidden, true);
+console.log('Verified shared related-dance selection and autoplay guidance visibility.');
+context.room = new Node('dialog');
+context.deck = [group, another];
+context.position = 0;
+context.roomFilter = '';
+context.recent = [];
+context.write = () => {};
+context.icon = () => new Node('svg');
+context.syncFavorites = () => {};
+context.nextDiscovery = () => {};
+context.previousDiscovery = () => {};
+context.languageControl = () => new Node('button', 'player-language');
+context.autoPlay = true;
+vm.runInContext(discovery.slice(discovery.indexOf('function showDiscovery('), discovery.indexOf("document.addEventListener('nissim-language-change'")), context);
+context.showDiscovery();
+assert.equal(context.room.querySelector('.related').parent, context.room);
+assert.equal(context.room.querySelector('.related').querySelector('.grid').children.length, 1);
+assert.match(context.room.querySelector('iframe').src, /autoplay=1.*playsinline=1/);
+const discoveryFrame = context.room.querySelector('iframe');
+context.lang = 'en';
+context.showDiscovery(true);
+assert.equal(context.room.querySelector('iframe'), discoveryFrame, 'Discovery language change must preserve playback');
+context.room.querySelector('.related').querySelector('.grid').children[0].onclick();
+assert.equal(context.position, 1, 'Discovery recommendations must stay in the current browsing deck');
+assert.equal(context.room.scrollTop, 0, 'Choosing a related dance must return to the new card');
+context.autoPlay = false;
+context.showDiscovery();
+assert.equal(context.room.querySelector('iframe'), null, 'Autoplay off must leave a playable cover in discovery');
+console.log('Verified discovery recommendations, preserved playback, scroll reset, and autoplay opt-out.');

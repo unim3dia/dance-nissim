@@ -181,7 +181,7 @@ function renderDance(){
   function select(v){
     player.dataset.recordingId=v.id;
     player.replaceChildren();
-    const iframe=element('iframe');iframe.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?rel=0${autoPlay?'&autoplay=1':''}`;
+    const iframe=element('iframe');iframe.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?rel=0&playsinline=1${autoPlay?'&autoplay=1':''}`;
     iframe.title=title(g)+' · '+kind(v);iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;player.append(iframe);
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===v.id));
   }
@@ -198,14 +198,10 @@ function renderDance(){
     if(step<0)button.prepend(arrow);else button.append(arrow);
     button.onclick=()=>navigate(step);
     navigation.append(button);
-    if(step<0)navigation.append(createAutoplayControl());
+    if(step<0)navigation.append(createAutoplayControl(()=>select(g.records.find(v=>v.id===player.dataset.recordingId)||featured[0])));
   }
-  body.append(headingRow,details,recordings,navigation,element('p','swipe-hint',t('החליקו על אזור הכותרת לשני הכיוונים כדי לגלות עוד ריקודים','Swipe the title area in either direction to explore more dances')));
-  const related=element('section','related');related.append(element('h3','',t('ממשיכים לגלות','Keep exploring')));
-  const grid=element('div','grid');
-  const ranked=dances.filter(d=>d.key!==g.key).map(d=>({g:d,score:(g.main.choreoKey&&d.main.choreoKey===g.main.choreoKey?5:0)+(g.main.style&&d.main.style===g.main.style?2:0)+(g.main.year&&d.main.year&&Math.abs(d.main.year-g.main.year)<10?1:0)})).sort((a,b)=>b.score-a.score||b.g.main.vn-a.g.main.vn).slice(0,6);
-  ranked.forEach(({g:d})=>{const b=element('button');b.append(image(d.main),element('p','',title(d)));b.onclick=()=>openDance(d,true);grid.append(b)});
-  related.append(grid);
+  body.append(headingRow,details,recordings,navigation,autoplayNote(),element('p','swipe-hint',t('החליקו על אזור הכותרת לשני הכיוונים כדי לגלות עוד ריקודים','Swipe the title area in either direction to explore more dances')));
+  const related=createRelatedDances(g,d=>openDance(d,true));
   if(reuse){
     root.querySelector('.dialog-body').replaceWith(body);
     root.querySelector('.related').replaceWith(related);
@@ -219,6 +215,13 @@ function renderDance(){
     select(tab==='learn'?featured.find(v=>v.type==='teaching')||featured[0]:featured[0]);
   }
 }
+function createRelatedDances(g,onSelect,collection=dances){
+  const related=element('section','related'),grid=element('div','grid');related.setAttribute('aria-label',t('ממשיכים לגלות','Keep exploring'));related.append(element('h3','',t('ממשיכים לגלות','Keep exploring')));
+  const ranked=collection.filter(d=>d.key!==g.key).map(d=>({g:d,score:(g.main.choreoKey&&d.main.choreoKey===g.main.choreoKey?5:0)+(g.main.style&&d.main.style===g.main.style?2:0)+(g.main.year&&d.main.year&&Math.abs(d.main.year-g.main.year)<10?1:0)})).sort((a,b)=>b.score-a.score||b.g.main.vn-a.g.main.vn).slice(0,6);
+  ranked.forEach(({g:d})=>{const button=element('button');button.type='button';button.append(image(d.main),element('p','',title(d)));button.onclick=()=>onSelect(d);grid.append(button)});
+  related.append(grid);return related;
+}
+function autoplayNote(){const note=element('p','autoplay-note',t('בטלפון ייתכן שתצטרכו ללחוץ על ▶ בסרטון כדי להתחיל.','Your phone may require a tap on ▶ in the video to start.'));note.hidden=!autoPlay;return note}
 function animateDanceCard(card,step){if(!matchMedia('(prefers-reduced-motion: reduce)').matches)card?.animate?.([{transform:`translateX(${step*36}px)`,opacity:.65},{transform:'translateX(0)',opacity:1}],{duration:260,easing:'cubic-bezier(.2,.7,.2,1)'})}
 function bindDanceSwipe(card,navigate){
   let start=null;
@@ -232,7 +235,7 @@ function updateLanguageControl(button){button.textContent=lang==='he'?'English':
 function languageControl(){const button=element('button','player-language');button.type='button';button.dataset.languageSwitch='';updateLanguageControl(button);button.onclick=changeLanguage;return button}
 function changeLanguage(){lang=lang==='he'?'en':'he';write('language',lang);language();syncFavorites();localizeControls();document.dispatchEvent(new Event('nissim-language-change'))}
 function updateAutoplayControl(button){button.textContent=t('ניגון אוטומטי: ','Autoplay: ')+(autoPlay?t('פועל','On'):t('כבוי','Off'));button.setAttribute('aria-pressed',autoPlay)}
-function createAutoplayControl(onEnable){const button=element('button','autoplay-toggle');button.type='button';updateAutoplayControl(button);button.onclick=()=>{autoPlay=!autoPlay;write('autoplay',autoPlay);document.querySelectorAll('.autoplay-toggle').forEach(updateAutoplayControl);if(autoPlay)onEnable?.()};return button}
+function createAutoplayControl(onEnable){const button=element('button','autoplay-toggle');button.type='button';updateAutoplayControl(button);button.onclick=()=>{autoPlay=!autoPlay;write('autoplay',autoPlay);document.querySelectorAll('.autoplay-toggle').forEach(updateAutoplayControl);document.querySelectorAll('.autoplay-note').forEach(note=>note.hidden=!autoPlay);if(autoPlay)onEnable?.()};return button}
 function preferences(){
   const autoTheme=new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark';
   const light=read('theme',autoTheme)==='light',large=read('large',true);
