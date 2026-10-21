@@ -92,8 +92,8 @@ assert.equal(content.querySelector('iframe'), lessonFrame, 'Video choices and au
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(html, /id="dialogLanguage"[^>]*data-language-switch/);
-assert.match(html, /data-he="האוסף של ניסים\." data-en="Nissim’s collection\."/);
-assert.match(html, /data-he="הזיכרונות של כולנו\." data-en="Memories we share\."/);
+assert.match(html, /data-he="האוסף של ניסים\." data-en="A world of dance\."/);
+assert.match(html, /data-he="הזיכרונות של כולנו\." data-en="Memories that move us\."/);
 for (const file of ['app.js', 'discover.js', 'video-player.js']) {
   assert.ok(!/[?&]cc_load_policy=1\b/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} forces captions on`);
 }
