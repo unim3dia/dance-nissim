@@ -249,6 +249,17 @@ dialog:not(.discovery-room) { background: radial-gradient(ellipse at 0 30%, var(
 body.light dialog:not(.discovery-room) { background: url('assets/dance-ribbons-blue.svg') center 70% / 1100px 580px no-repeat, radial-gradient(ellipse at 0 20%, #8dcdf033, transparent 65%), radial-gradient(ellipse at 100% 100%, #bfdff24d, transparent 75%), var(--panel); }
 body.light .discovery-room { background: url('assets/dance-ribbons-blue.svg') center 360px / 1440px 660px no-repeat, radial-gradient(ellipse at 0 0, #9fd4f159, transparent 65%), radial-gradient(ellipse at 100% 100%, #c4e4f34d, transparent 75%), var(--bg); }
 .room-screen { border: 1px solid var(--border); border-radius: var(--radius-surface); }
+.player, .room-screen { position: relative; min-height: 200px; }
+.video-surface, .video-poster { width: 100%; height: 100%; }
+.video-surface iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video-poster { position: relative; display: block; padding: 0; border: 0; border-radius: 0; background: #071b2b; overflow: hidden; }
+.video-poster img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.video-poster-play { position: absolute; inset: 0; margin: auto; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: var(--accent); color: var(--action-ink); box-shadow: 0 4px 28px #0006; border: 1px solid #ffffffa0; }
+.video-poster-play svg { width: 25px; height: 25px; fill: currentColor; }
+.video-poster-message { position: absolute; inset-inline: 12px; bottom: 10px; color: #fff; background: #071b2bee; font-size: 15px; line-height: 1.4; padding: 7px 10px; border-radius: 8px; }
+.video-poster-message:empty { display: none; }
+.video-surface[hidden], .video-poster[hidden] { display: none; }
+body.light .video-poster-play { background: var(--button-fill); color: var(--button-ink); }
 .room-bottom .primary { background: var(--accent); color: var(--action-ink); }
 @media (hover: hover) {
   .card:hover { transform: translateY(-3px); box-shadow: 0 0 8px var(--card-halo), 0 0 20px var(--card-halo), 0 8px 24px var(--shadow); }

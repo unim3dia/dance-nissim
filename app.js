@@ -170,7 +170,7 @@ function openDance(g,retainSequence=false,focusTarget='closeDialog'){
   else $('danceContent').querySelector('h2').focus({preventScroll:true});
 }
 function renderDance(){
-  const g=current,root=$('danceContent'),body=element('div','dialog-body'),existing=root.querySelector('.player'),reuse=existing?.dataset.danceKey===g.key,player=reuse?existing:element('div','player');
+  const g=current,root=$('danceContent'),body=element('div','dialog-body'),existing=root.querySelector('.player'),reuse=existing?.dataset.danceKey===g.key,player=existing||element('div','player'),video=danceVideo(player);
   player.dataset.danceKey=g.key;
   $('danceDialog').setAttribute('aria-label',title(g));
   const heading=element('h2','',title(g));heading.tabIndex=-1;
@@ -178,11 +178,8 @@ function renderDance(){
   const headingRow=element('div','dance-heading');headingRow.append(heading,favorite(g));
   const recordings=element('div','recordings'),featured=featuredRecordings(g);
   recordings.setAttribute('role','group');recordings.setAttribute('aria-label',t('בחירת סרטון','Choose a video'));
-  function select(v){
-    player.dataset.recordingId=v.id;
-    player.replaceChildren();
-    const iframe=element('iframe');iframe.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?rel=0&playsinline=1${autoPlay?'&autoplay=1':''}`;
-    iframe.title=title(g)+' · '+kind(v);iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;player.append(iframe);
+  function select(v,play=true){
+    video.setRecording(g,v,play);
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===v.id));
   }
   for(const v of featured){
@@ -198,22 +195,20 @@ function renderDance(){
     if(step<0)button.prepend(arrow);else button.append(arrow);
     button.onclick=()=>navigate(step);
     navigation.append(button);
-    if(step<0)navigation.append(createAutoplayControl(()=>select(g.records.find(v=>v.id===player.dataset.recordingId)||featured[0])));
+    if(step<0)navigation.append(createAutoplayControl(()=>video.play()));
   }
   body.append(headingRow,details,recordings,navigation,autoplayNote(),element('p','swipe-hint',t('החליקו על אזור הכותרת לשני הכיוונים כדי לגלות עוד ריקודים','Swipe the title area in either direction to explore more dances')));
   const related=createRelatedDances(g,d=>openDance(d,true));
-  if(reuse){
+  if(existing){
     root.querySelector('.dialog-body').replaceWith(body);
     root.querySelector('.related').replaceWith(related);
     bindDanceSwipe(root.querySelector('.dance-stage-card'),navigate);
-    const selected=g.records.find(v=>v.id===player.dataset.recordingId)||g.main;
-    player.querySelector('iframe').title=title(g)+' · '+kind(selected);
-    [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===selected.id));
   }else{
     const stage=element('section','dance-stage-card');stage.append(player,body);bindDanceSwipe(stage,navigate);
     root.replaceChildren(stage,related);
-    select(tab==='learn'?featured.find(v=>v.type==='teaching')||featured[0]:featured[0]);
   }
+  if(reuse){video.localize();[...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===player.dataset.recordingId))}
+  else select(tab==='learn'?featured.find(v=>v.type==='teaching')||featured[0]:featured[0],autoPlay);
 }
 function createRelatedDances(g,onSelect,collection=dances){
   const related=element('section','related'),grid=element('div','grid');related.setAttribute('aria-label',t('ממשיכים לגלות','Keep exploring'));related.append(element('h3','',t('ממשיכים לגלות','Keep exploring')));
@@ -221,7 +216,7 @@ function createRelatedDances(g,onSelect,collection=dances){
   ranked.forEach(({g:d})=>{const button=element('button');button.type='button';button.append(image(d.main),element('p','',title(d)));button.onclick=()=>onSelect(d);grid.append(button)});
   related.append(grid);return related;
 }
-function autoplayNote(){const note=element('p','autoplay-note',t('בטלפון ייתכן שתצטרכו ללחוץ על ▶ בסרטון כדי להתחיל.','Your phone may require a tap on ▶ in the video to start.'));note.hidden=!autoPlay;return note}
+function autoplayNote(){const note=element('p','autoplay-note',t('ניגון אוטומטי מתחיל כל ריקוד כשהדפדפן מאפשר זאת. אם נחסם, לחצו על ▶.','Autoplay starts each dance when your browser allows it. If blocked, tap ▶.'));note.hidden=!autoPlay;return note}
 function animateDanceCard(card,step){if(!matchMedia('(prefers-reduced-motion: reduce)').matches)card?.animate?.([{transform:`translateX(${step*36}px)`,opacity:.65},{transform:'translateX(0)',opacity:1}],{duration:260,easing:'cubic-bezier(.2,.7,.2,1)'})}
 function bindDanceSwipe(card,navigate){
   let start=null;
@@ -253,4 +248,4 @@ $('language').onclick=changeLanguage;$('dialogLanguage').onclick=changeLanguage;
 document.addEventListener('click',e=>{for(const id of ['libraryMenu']){const menu=$(id);if(menu.open&&!menu.contains(e.target))menu.open=false}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){for(const id of ['libraryMenu']){const menu=$(id);if(menu.open){menu.open=false;menu.querySelector('summary').focus()}}}});
 function localizeControls(){$('closeDialog').setAttribute('aria-label',t('סגירה','Close'));$('closeDialog').title=t('סגירה','Close');$('filterToggle').setAttribute('aria-label',t('סינון לפי כוריאוגרף, סוג ריקוד ושנה','Filter by choreographer, formation and year'));$('tabs').setAttribute('aria-label',t('הספרייה','Collection'));$('sort').setAttribute('aria-label',t('סדר תצוגה','Sort by'));const menu=$('libraryMenu').querySelector('summary'),menuLabel=t('תפריט','Menu');menu.setAttribute('aria-label',menuLabel);menu.title=menuLabel;document.querySelectorAll('#language,[data-language-switch]').forEach(updateLanguageControl);syncFavorites()}
 localizeControls();
-for(const id of ['formation','choreographer','decade','sort'])$(id).onchange=()=>{limit=18;render()};let timer;$('search').oninput=()=>{clearTimeout(timer);timer=setTimeout(()=>{limit=18;render()},180)};$('searchForm').onsubmit=e=>{e.preventDefault();clearTimeout(timer);limit=18;render()};$('reset').onclick=()=>{$('search').value='';for(const id of ['formation','choreographer','decade'])$(id).value='';limit=18;render()};$('more').onclick=()=>{const start=limit;limit+=18;render();$('grid').children[start]?.querySelector('button').focus({preventScroll:true})};$('closeDialog').onclick=()=>$('danceDialog').close();$('danceDialog').addEventListener('close',()=>{$('danceContent').replaceChildren();document.body.style.overflow='';current=null;navigationKeys=[];render()});language();
+for(const id of ['formation','choreographer','decade','sort'])$(id).onchange=()=>{limit=18;render()};let timer;$('search').oninput=()=>{clearTimeout(timer);timer=setTimeout(()=>{limit=18;render()},180)};$('searchForm').onsubmit=e=>{e.preventDefault();clearTimeout(timer);limit=18;render()};$('reset').onclick=()=>{$('search').value='';for(const id of ['formation','choreographer','decade'])$(id).value='';limit=18;render()};$('more').onclick=()=>{const start=limit;limit+=18;render();$('grid').children[start]?.querySelector('button').focus({preventScroll:true})};$('closeDialog').onclick=()=>$('danceDialog').close();$('danceDialog').addEventListener('close',()=>{disposeDanceVideo($('danceContent').querySelector('.player'));$('danceContent').replaceChildren();document.body.style.overflow='';current=null;navigationKeys=[];render()});language();

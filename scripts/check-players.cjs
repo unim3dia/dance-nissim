@@ -33,6 +33,21 @@ const demo = { id: 'dance-id', type: 'dance', year: 1985 };
 const lesson = { id: 'lesson-id', type: 'teaching', year: 1985 };
 const group = { key: 'test-dance', main: demo, records: [demo, lesson] };
 const content = new Node('div'), dialog = new Node('dialog');
+const videoMocks = new WeakMap();
+function mockVideo(host) {
+  if (videoMocks.has(host)) return videoMocks.get(host);
+  const controller = {
+    playCalls: 0,
+    setRecording(g, v, autoplay) {
+      host.dataset.recordingId = v.id;
+      host.dataset.playback = autoplay ? 'loading' : 'poster';
+      if (autoplay && !host.querySelector('iframe')) host.append(new Node('iframe'));
+    },
+    play() { this.playCalls++; host.dataset.playback = 'loading'; },
+    localize() {}
+  };
+  videoMocks.set(host, controller); return controller;
+}
 const context = vm.createContext({
   current: group, dances: [group], navigationKeys: [], tab: 'all', lang: 'en', autoPlay: true,
   $: id => id === 'danceContent' ? content : dialog,
@@ -43,6 +58,7 @@ const context = vm.createContext({
   name: () => 'Creator', shape: () => 'Couples',
   favorite: () => new Node('button'),
   image: () => new Node('img'),
+  danceVideo: mockVideo,
   featuredRecordings: () => [demo, lesson],
   collectionNeighbor: () => null,
   createAutoplayControl: onEnable => { const button = new Node('button', 'autoplay-toggle'); button.onEnable = onEnable; return button; },
@@ -53,30 +69,32 @@ context.renderDance();
 assert.equal(content.querySelector('.dance-stage-card').querySelector('.player'), content.querySelector('.player'));
 assert.deepEqual(content.querySelector('.dance-navigation').children.map(n => n.className), ['', 'autoplay-toggle', '']);
 assert.equal(content.querySelector('.related').parent, content, 'Keep exploring must be outside the floating viewing card');
-assert.match(content.querySelector('iframe').src, /dance-id/);
-assert.match(content.querySelector('iframe').src, /autoplay=1/);
-assert.match(content.querySelector('iframe').src, /playsinline=1/);
+assert.equal(content.querySelector('.player').dataset.recordingId, 'dance-id');
+assert.equal(content.querySelector('.player').dataset.playback, 'loading');
 content.querySelector('.recordings').children[1].onclick();
 const lessonFrame = content.querySelector('iframe');
-assert.match(lessonFrame.src, /lesson-id/);
+assert.equal(content.querySelector('.player').dataset.recordingId, 'lesson-id');
 context.lang = 'he';
 context.renderDance();
 assert.equal(content.querySelector('iframe'), lessonFrame, 'Language change replaced the active video');
 assert.equal(content.querySelector('.recordings').children[1].attributes['aria-pressed'], 'true');
 assert.equal(content.querySelector('.recordings').children[1].textContent, 'ללמוד את הצעדים');
 content.querySelector('.recordings').children[0].onclick();
-assert.match(content.querySelector('iframe').src, /dance-id/);
+assert.equal(content.querySelector('.player').dataset.recordingId, 'dance-id');
 assert.equal(content.querySelector('.recordings').children[0].attributes['aria-pressed'], 'true');
 context.autoPlay = false;
 content.querySelector('.recordings').children[1].onclick();
-assert.ok(!content.querySelector('iframe').src.includes('autoplay=1'), 'Saved autoplay opt-out was ignored by the player');
+assert.equal(content.querySelector('.player').dataset.playback, 'loading', 'An explicit video-choice tap must play even when automatic playback is off');
 context.autoPlay = true;
 content.querySelector('.autoplay-toggle').onEnable();
-assert.match(content.querySelector('iframe').src, /lesson-id.*autoplay=1/, 'Enabling autoplay must start the selected recording');
+assert.equal(mockVideo(content.querySelector('.player')).playCalls, 1, 'Enabling autoplay must command the existing player');
+assert.equal(content.querySelector('iframe'), lessonFrame, 'Video choices and autoplay must not rebuild the iframe');
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(html, /id="dialogLanguage"[^>]*data-language-switch/);
-for (const file of ['app.js', 'discover.js']) {
+assert.match(html, /data-he="האוסף של ניסים\." data-en="Nissim’s collection\."/);
+assert.match(html, /data-he="הזיכרונות של כולנו\." data-en="Memories we share\."/);
+for (const file of ['app.js', 'discover.js', 'video-player.js']) {
   assert.ok(!/[?&]cc_load_policy=1\b/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} forces captions on`);
 }
 console.log('Verified dance/lesson round trips, bilingual selection, preserved iframe identity, and no forced captions.');
@@ -96,9 +114,9 @@ for (const lang of ['he', 'en']) {
   }
 }
 assert.ok(!/מפגש עם האוסף|FROM THE COLLECTION/.test(discovery), 'Discovery counter text returned');
-assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,autoplayNote(),external)'), 'Autoplay must sit between previous and next, below video choices');
+assert.ok(discovery.includes('navigation.append(previous,auto,next);info.append(actions,navigation,autoplayNote())'), 'Autoplay must sit between previous and next, below video choices');
 assert.ok(discovery.includes('createRelatedDances(g,') && discovery.includes('else room.append(related)'), 'Discovery must include Keep exploring outside the viewing card');
-assert.ok(discovery.includes('playsinline=1'), 'Discovery must request inline playback on mobile');
+assert.ok(!discovery.includes('Open on YouTube'), 'Discovery must not add a separate YouTube link');
 console.log('Verified autoplay defaults on, saved opt-out is respected, and both languages show its state.');
 const navigation = discovery.split('\n').filter(line => /^function (nextDiscovery|previousDiscovery)\(/.test(line)).join('\n');
 const navigationContext = vm.createContext({ deck: ['first', 'middle', 'last'], position: 0, showDiscovery: () => {}, animateDanceCard: () => {}, room: { querySelector: () => null } });
@@ -158,7 +176,7 @@ vm.runInContext(discovery.slice(discovery.indexOf('function showDiscovery('), di
 context.showDiscovery();
 assert.equal(context.room.querySelector('.related').parent, context.room);
 assert.equal(context.room.querySelector('.related').querySelector('.grid').children.length, 1);
-assert.match(context.room.querySelector('iframe').src, /autoplay=1.*playsinline=1/);
+assert.equal(context.room.querySelector('.room-screen').dataset.playback, 'loading');
 const discoveryFrame = context.room.querySelector('iframe');
 context.lang = 'en';
 context.showDiscovery(true);
@@ -168,5 +186,6 @@ assert.equal(context.position, 1, 'Discovery recommendations must stay in the cu
 assert.equal(context.room.scrollTop, 0, 'Choosing a related dance must return to the new card');
 context.autoPlay = false;
 context.showDiscovery();
-assert.equal(context.room.querySelector('iframe'), null, 'Autoplay off must leave a playable cover in discovery');
+assert.equal(context.room.querySelector('.room-screen').dataset.playback, 'poster', 'Autoplay off must leave a playable cover in discovery');
+assert.equal(context.room.querySelector('iframe'), discoveryFrame, 'Discovery must keep the existing player across dances');
 console.log('Verified discovery recommendations, preserved playback, scroll reset, and autoplay opt-out.');
