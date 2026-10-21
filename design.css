@@ -24,26 +24,30 @@
   --radius-surface: 20px;
 }
 body.light {
-  --bg: #f7f9fd;
-  --panel: #fffefd;
-  --text: #192e50;
-  --muted: #4f6382;
-  --gold: #795c2e;
-  --accent: #0038b8;
+  --bg: #fbfcfa;
+  --panel: #fffefa;
+  --text: #143247;
+  --muted: #4b6070;
+  --gold: #73591d;
+  --accent: #0d4c69;
   --action-ink: #ffffff;
-  --border: #c7d3e8;
-  --control-border: #7a8ba5;
-  --input: #fffefd;
-  --shadow: #143c8a14;
-  --accent-wash: #0038b80d;
-  --halo-teal: #0038b84d;
-  --halo-amber: #73a9ff52;
-  --halo-plum: #366be638;
-  --frame: #477bc4;
-  --frame-glow: #225cbe26;
-  --card-reading: #fffefded;
-  --title-gradient: linear-gradient(105deg, #123f9d 10%, #2573c4 48%, #0038b8 85%);
-  --header: #fffefded;
+  --border: #bdcdd3;
+  --control-border: #6b8592;
+  --input: #fffefa;
+  --shadow: #103c5524;
+  --accent-wash: #0d4c690d;
+  --halo-teal: #2c879c38;
+  --halo-amber: #c4af7a1a;
+  --halo-plum: #508fa226;
+  --frame: #275c73;
+  --frame-glow: #bd9d4b36;
+  --card-reading: #fffefaed;
+  --title-gradient: linear-gradient(105deg, #8acde6 10%, #b1d2e6 60%, #dfcba1 95%);
+  --header: #0b3a55;
+  --hero-blue: #0b3d5c;
+  --hero-gold: #e1ca8a;
+  --button-gold: #b89b49;
+  --button-ink: #102e42;
 }
 body {
   position: relative;
@@ -306,12 +310,60 @@ body.large .header-tools { margin-inline-start: auto; }
 }
 body.large .collection-actions { flex-wrap: wrap; }
 body.large .sort-control { min-width: 132px; flex-basis: auto; }
+
+/* Larger, paired library controls and an unmistakable save target. */
+.collection-actions, body.large .collection-actions { flex-wrap: nowrap; }
+.sort-control, body.large .sort-control { min-width: 170px; flex: 0 0 170px; }
+.sort-control, #filterToggle { font-size: 1em; min-height: 54px; padding-inline: 20px; }
+#filterToggle { min-width: 218px; }
+.favorite.icon-button { width: 48px; height: 48px; min-width: 48px; padding: 8px !important; }
+.favorite svg { width: 29px; height: 29px; }
+.autoplay-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; margin-top: 18px; padding: 9px 14px; font-size: .85em; border-color: var(--control-border); background: var(--input); }
+.autoplay-toggle::before { content: ''; width: 9px; height: 9px; border: 1px solid currentColor; border-radius: 50%; }
+.autoplay-toggle[aria-pressed=true] { color: var(--accent); border-color: var(--accent); background: var(--accent-wash); }
+.autoplay-toggle[aria-pressed=true]::before { background: currentColor; }
+.room-info > .external { display: block; width: fit-content; }
+
+/* Blue-and-gold entrance; the catalog remains a white reading surface. */
+body.light { background: radial-gradient(ellipse 650px 800px at 0 1100px, #247e9b2e, transparent 80%), radial-gradient(ellipse 700px 700px at 100% 2200px, #c5b2761c, transparent 80%), var(--bg); }
+body.light::before { opacity: .2; }
+body.light .hero { position: relative; isolation: isolate; max-width: none; padding-inline: max(48px, calc((100% - 1344px) / 2)); }
+body.light .hero::before { content: ''; position: absolute; z-index: -1; pointer-events: none; inset: -120px 0 0; background: url('assets/limestone-wash.svg') right top / 1000px 100% no-repeat, url('assets/dance-ribbons.svg') center calc(100% + 120px) / 1440px 660px no-repeat, linear-gradient(180deg, var(--hero-blue) 0%, var(--hero-blue) 88%, var(--bg) 100%); }
+[dir=rtl] body.light .hero::before { transform: scaleX(-1); }
+body.light .site-header { border-color: #b6a36d; }
+body.light .site-header .brand { color: var(--hero-gold); }
+body.light .site-header .brand-mark { color: var(--hero-gold); }
+body.light .site-header .header-control, body.light .site-header .library-menu summary { color: var(--hero-gold); background: #103f59; border-color: #b6a36d; }
+body.light .site-header #language { color: var(--button-ink); background: var(--button-gold); }
+body.light .site-header .text-size-control[aria-pressed=true] { background: #22566b; }
+body.light .site-header .header-control:hover, body.light .site-header .library-menu summary:hover { background: #22566b; }
+body.light .hero h1 { color: var(--hero-gold); }
+body.light .hero .surprise-action { color: #f5e9bf; background: #0e6270; border-color: var(--hero-gold); }
+body.light .hero .surprise-action:hover { background: #154654; }
+body.light .hero-dance { border: 2px solid #dfcb8d; background: var(--panel); box-shadow: 0 0 28px #e8c97542, 0 14px 34px #031c3240; }
+body.light .primary, body.light .more, body.light .play-disc, body.light .thumb .play-disc, body.light .recordings button[aria-pressed=true], body.light .dance-navigation button { background: var(--button-gold); color: var(--button-ink); }
+body.light .primary:hover, body.light .more:hover { background: #d3b965; }
+body.light .section-heading h2 { color: var(--gold); }
+body.light .search-submit { background: var(--button-gold); color: var(--button-ink); }
+body.light .card, body.light .card:nth-child(3n + 2), body.light .card:nth-child(3n) { --card-edge: #275c73; --card-edge-alt: #70909d; --card-halo: #216b8226; }
+body.light .favorite { color: #806522; }
+body.light .favorite[aria-pressed=true] { color: #73591d; }
+body.light .room-bottom .primary { background: var(--button-gold); color: var(--button-ink); }
+@media (max-width: 760px) {
+  body.light .hero { padding-inline: 22px; }
+  .collection-actions, body.large .collection-actions { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 10px; width: 100%; }
+  .sort-control, body.large .sort-control, #filterToggle { min-width: 0; width: 100%; padding-inline: 12px; font-size: .95em; gap: 8px; }
+}
+@media (max-width: 359px) {
+  .collection-actions, body.large .collection-actions { gap: 8px; }
+  .sort-control, body.large .sort-control, #filterToggle { padding-inline: 6px; font-size: 16.5px; gap: 6px; }
+}
 @media (prefers-reduced-motion: reduce) {
   button, a, summary, .card { transition: none; }
   .card:hover, .card-watch:hover img { transform: none; }
 }
 @media (forced-colors: active) {
-  body::before { display: none; }
+  body::before, body.light .hero::before { display: none; }
   .card { background: Canvas; border: 1px solid CanvasText; box-shadow: none; }
   .hero h1 .hero-accent { background: none; color: CanvasText; }
   .primary, .more, .dance-navigation button { border: 1px solid ButtonText; }

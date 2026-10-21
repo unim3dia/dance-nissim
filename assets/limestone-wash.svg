@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="none" fill="none">
+  <defs>
+    <linearGradient id="fade"><stop offset=".28" stop-color="white" stop-opacity="0"/><stop offset=".7" stop-color="white" stop-opacity=".08"/><stop offset="1" stop-color="white" stop-opacity=".5"/></linearGradient>
+    <linearGradient id="vertical" x1="0" y1="0" x2="0" y2="1"><stop offset=".65" stop-color="white"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient>
+    <mask id="stone"><rect width="1200" height="700" fill="url(#fade)"/></mask>
+    <mask id="soft-edge"><rect width="1200" height="700" fill="url(#vertical)"/></mask>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".055" numOctaves="3" seed="12"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+  <g mask="url(#soft-edge)"><g mask="url(#stone)">
+    <rect width="1200" height="700" fill="#e2d7b9"/>
+    <rect width="1200" height="700" filter="url(#grain)" opacity=".2"/>
+    <path d="M0 152H1200M0 318H1200M0 488H1200M0 653H1200M380 0V152M860 0V152M610 152V318M1050 152V318M350 318V488M815 318V488M600 488V653M1085 488V653" stroke="#796e54" stroke-opacity=".3" stroke-width="2"/>
+    <path d="m884 38-8 36 6 24m-254 93-13 30 6 40m377 139-11 25 5 22m-589 173-7 24 4 18" stroke="#746950" stroke-opacity=".25"/>
+  </g></g>
+</svg>

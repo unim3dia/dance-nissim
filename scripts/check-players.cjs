@@ -67,3 +67,21 @@ for (const file of ['app.js', 'discover.js']) {
   assert.ok(!/[?&]cc_load_policy=1\b/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} forces captions on`);
 }
 console.log('Verified dance/lesson round trips, bilingual selection, preserved iframe identity, and no forced captions.');
+const discovery = fs.readFileSync(path.join(root, 'discover.js'), 'utf8');
+const initialization = discovery.split('\n').find(line => line.startsWith('let deck='));
+const autoplayLabel = discovery.split('\n').find(line => line.startsWith('function updateAutoplayControl'));
+for (const lang of ['he', 'en']) {
+  for (const saved of [undefined, true, false]) {
+    const button = new Node('button');
+    const autoplayContext = vm.createContext({
+      button, read: (_, fallback) => saved ?? fallback,
+      t: (he, en) => lang === 'he' ? he : en
+    });
+    vm.runInContext(initialization + '\n' + autoplayLabel + '\nupdateAutoplayControl(button);', autoplayContext);
+    assert.equal(button.attributes['aria-pressed'], String(saved ?? true));
+    assert.equal(button.textContent, lang === 'en' ? `Autoplay: ${(saved ?? true) ? 'On' : 'Off'}` : `ניגון אוטומטי: ${(saved ?? true) ? 'פועל' : 'כבוי'}`);
+  }
+}
+assert.ok(!/מפגש עם האוסף|FROM THE COLLECTION/.test(discovery), 'Discovery counter text returned');
+assert.ok(discovery.includes('info.append(actions,auto,external)'), 'Autoplay must remain beside the video choices');
+console.log('Verified autoplay defaults on, saved opt-out is respected, and both languages show its state.');

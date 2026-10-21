@@ -19,5 +19,9 @@ for (const [theme, palette] of [['dark', dark], ['light', { ...dark, ...tokens('
   }
 }
 assert.ok(css.includes('prefers-reduced-motion: reduce'));
+const light = tokens('body.light {');
+for (const [foreground, background] of [['hero-gold', 'hero-blue'], ['button-ink', 'button-gold']]) {
+  assert.ok(contrast(light[foreground], light[background]) >= 4.5, `Light entrance contrast failed: ${foreground}`);
+}
 assert.ok(css.includes('forced-colors: active'));
 console.log('Design checks passed: dark/light text, action and control contrast; motion and forced-color fallbacks.');
