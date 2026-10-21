@@ -322,6 +322,7 @@ body.large .sort-control { min-width: 132px; flex-basis: auto; }
 .autoplay-toggle::before { content: ''; width: 9px; height: 9px; border: 1px solid currentColor; border-radius: 50%; }
 .autoplay-toggle[aria-pressed=true] { color: var(--accent); border-color: var(--accent); background: var(--accent-wash); }
 .autoplay-toggle[aria-pressed=true]::before { background: currentColor; }
+.dialog-body > .autoplay-toggle { margin-top: 0; }
 .room-info > .external { display: block; width: fit-content; }
 
 /* Blue-and-gold entrance; the catalog remains a white reading surface. */

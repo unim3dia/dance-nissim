@@ -2,6 +2,7 @@ const $=id=>document.getElementById(id);
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem('nissim-'+key))??fallback}catch{return fallback}};
 const write=(key,value)=>{try{localStorage.setItem('nissim-'+key,JSON.stringify(value))}catch{}};
 let lang=read('language','he'),tab='all',limit=18,current=null,navigationKeys=[];
+let autoPlay=read('autoplay',true);
 const saved=new Set(read('favorites',[]));let recent=read('recent',[]);
 const researchedCredits=window.RESEARCHED_VIDEO_CREDITS||{};
 const titleCorrections=window.VIDEO_TITLE_CORRECTIONS||{};
@@ -179,8 +180,8 @@ function renderDance(){
   function select(v){
     player.dataset.recordingId=v.id;
     player.replaceChildren();
-    const iframe=element('iframe');iframe.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?rel=0`;
-    iframe.title=title(g)+' · '+kind(v);iframe.allow='fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;player.append(iframe);
+    const iframe=element('iframe');iframe.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?rel=0${autoPlay?'&autoplay=1':''}`;
+    iframe.title=title(g)+' · '+kind(v);iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;player.append(iframe);
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===v.id));
   }
   for(const v of featured){
@@ -196,7 +197,7 @@ function renderDance(){
     button.onclick=()=>{const next=groups.get(key);if(next)openDance(next,true,id)};
     navigation.append(button);
   }
-  body.append(headingRow,details,recordings,navigation);
+  body.append(headingRow,details,recordings,createAutoplayControl(),navigation);
   const related=element('section','related');related.append(element('h3','',t('ממשיכים לגלות','Keep exploring')));
   const grid=element('div','grid');
   const ranked=dances.filter(d=>d.key!==g.key).map(d=>({g:d,score:(g.main.choreoKey&&d.main.choreoKey===g.main.choreoKey?5:0)+(g.main.style&&d.main.style===g.main.style?2:0)+(g.main.year&&d.main.year&&Math.abs(d.main.year-g.main.year)<10?1:0)})).sort((a,b)=>b.score-a.score||b.g.main.vn-a.g.main.vn).slice(0,6);
@@ -215,6 +216,8 @@ function renderDance(){
 function updateLanguageControl(button){button.textContent=lang==='he'?'English':'עברית';const label=t('Switch to English','מעבר לעברית');button.setAttribute('aria-label',label);button.title=label}
 function languageControl(){const button=element('button','player-language');button.type='button';button.dataset.languageSwitch='';updateLanguageControl(button);button.onclick=changeLanguage;return button}
 function changeLanguage(){lang=lang==='he'?'en':'he';write('language',lang);language();syncFavorites();localizeControls();document.dispatchEvent(new Event('nissim-language-change'))}
+function updateAutoplayControl(button){button.textContent=t('ניגון אוטומטי: ','Autoplay: ')+(autoPlay?t('פועל','On'):t('כבוי','Off'));button.setAttribute('aria-pressed',autoPlay)}
+function createAutoplayControl(onEnable){const button=element('button','autoplay-toggle');button.type='button';updateAutoplayControl(button);button.onclick=()=>{autoPlay=!autoPlay;write('autoplay',autoPlay);document.querySelectorAll('.autoplay-toggle').forEach(updateAutoplayControl);if(autoPlay)onEnable?.()};return button}
 function preferences(){
   const autoTheme=new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark';
   const light=read('theme',autoTheme)==='light',large=read('large',true);

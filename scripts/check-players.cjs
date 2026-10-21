@@ -34,7 +34,7 @@ const lesson = { id: 'lesson-id', type: 'teaching', year: 1985 };
 const group = { key: 'test-dance', main: demo, records: [demo, lesson] };
 const content = new Node('div'), dialog = new Node('dialog');
 const context = vm.createContext({
-  current: group, dances: [group], navigationKeys: [], tab: 'all', lang: 'en',
+  current: group, dances: [group], navigationKeys: [], tab: 'all', lang: 'en', autoPlay: true,
   $: id => id === 'danceContent' ? content : dialog,
   element: (tag, cls, text) => new Node(tag, cls, text),
   t: (he, en) => context.lang === 'he' ? he : en,
@@ -44,11 +44,13 @@ const context = vm.createContext({
   favorite: () => new Node('button'),
   featuredRecordings: () => [demo, lesson],
   collectionNeighbor: () => null,
+  createAutoplayControl: () => new Node('button', 'autoplay-toggle'),
   encodeURIComponent
 });
 vm.runInContext(source.slice(source.indexOf('function renderDance(){'), source.indexOf('function updateLanguageControl')), context);
 context.renderDance();
 assert.match(content.querySelector('iframe').src, /dance-id/);
+assert.match(content.querySelector('iframe').src, /autoplay=1/);
 content.querySelector('.recordings').children[1].onclick();
 const lessonFrame = content.querySelector('iframe');
 assert.match(lessonFrame.src, /lesson-id/);
@@ -60,6 +62,9 @@ assert.equal(content.querySelector('.recordings').children[1].textContent, 'לל
 content.querySelector('.recordings').children[0].onclick();
 assert.match(content.querySelector('iframe').src, /dance-id/);
 assert.equal(content.querySelector('.recordings').children[0].attributes['aria-pressed'], 'true');
+context.autoPlay = false;
+content.querySelector('.recordings').children[1].onclick();
+assert.ok(!content.querySelector('iframe').src.includes('autoplay=1'), 'Saved autoplay opt-out was ignored by the player');
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(html, /id="dialogLanguage"[^>]*data-language-switch/);
@@ -68,8 +73,8 @@ for (const file of ['app.js', 'discover.js']) {
 }
 console.log('Verified dance/lesson round trips, bilingual selection, preserved iframe identity, and no forced captions.');
 const discovery = fs.readFileSync(path.join(root, 'discover.js'), 'utf8');
-const initialization = discovery.split('\n').find(line => line.startsWith('let deck='));
-const autoplayLabel = discovery.split('\n').find(line => line.startsWith('function updateAutoplayControl'));
+const initialization = source.split('\n').find(line => line.startsWith('let autoPlay='));
+const autoplayLabel = source.split('\n').find(line => line.startsWith('function updateAutoplayControl'));
 for (const lang of ['he', 'en']) {
   for (const saved of [undefined, true, false]) {
     const button = new Node('button');
