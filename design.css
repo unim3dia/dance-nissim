@@ -384,6 +384,7 @@ body.large .sort-control { min-width: 132px; flex-basis: auto; }
   .room-info h2 { font-size: 32px; }
   .dance-navigation { gap: 6px; }
   .dance-navigation button { font-size: 15px; min-height: 64px; padding: 8px 5px; }
+  body.large .dance-navigation button { font-size: 17px; }
   .dance-navigation .navigation-arrow, .dance-navigation .autoplay-toggle::before { display: none; }
   .room-bottom > select { flex: 0 1 auto; }
 }
@@ -445,6 +446,7 @@ body.light .dance-navigation .autoplay-toggle[aria-pressed=true] { color: var(--
 @media (max-width: 359px) {
   .collection-actions, body.large .collection-actions { gap: 8px; }
   .sort-control, body.large .sort-control, #filterToggle { padding-inline: 6px; font-size: 16.5px; gap: 6px; }
+  body.large .sort-control, body.large #filterToggle { font-size: 18.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   button, a, summary, .card, .dance-stage-card, .room-stage { transition: none; }

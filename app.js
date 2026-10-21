@@ -231,7 +231,7 @@ function changeLanguage(){lang=lang==='he'?'en':'he';write('language',lang);lang
 function updateAutoplayControl(button){button.textContent=t('ניגון אוטומטי: ','Autoplay: ')+(autoPlay?t('פועל','On'):t('כבוי','Off'));button.setAttribute('aria-pressed',autoPlay)}
 function createAutoplayControl(onEnable){const button=element('button','autoplay-toggle');button.type='button';updateAutoplayControl(button);button.onclick=()=>{autoPlay=!autoPlay;write('autoplay',autoPlay);document.querySelectorAll('.autoplay-toggle').forEach(updateAutoplayControl);if(autoPlay)onEnable?.()};return button}
 function preferences(){
-  const autoTheme=new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark';
+  const hour=new Date().getHours(),autoTheme=hour>=7&&hour<19?'light':'dark';
   const light=read('theme',autoTheme)==='light',large=read('large',true);
   document.body.classList.toggle('light',light);document.body.classList.toggle('large',large);
   const size=$('textSize'),sizeLabel=t('טקסט גדול','Larger text');
@@ -244,6 +244,7 @@ function preferences(){
   theme.querySelector('.sun-icon').hidden=light;theme.querySelector('.moon-icon').hidden=!light;
 }
 $('language').onclick=changeLanguage;$('dialogLanguage').onclick=changeLanguage;$('theme').onclick=()=>{write('theme',document.body.classList.contains('light')?'dark':'light');preferences()};$('textSize').onclick=()=>{write('large',!read('large',true));preferences()};$('filterToggle').onclick=()=>{$('filters').hidden=!$('filters').hidden;$('filterToggle').setAttribute('aria-expanded',!$('filters').hidden)};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)preferences()});
 document.addEventListener('click',e=>{for(const id of ['libraryMenu']){const menu=$(id);if(menu.open&&!menu.contains(e.target))menu.open=false}});document.addEventListener('keydown',e=>{if(e.key==='Escape'){for(const id of ['libraryMenu']){const menu=$(id);if(menu.open){menu.open=false;menu.querySelector('summary').focus()}}}});
 function localizeControls(){$('closeDialog').setAttribute('aria-label',t('סגירה','Close'));$('closeDialog').title=t('סגירה','Close');$('filterToggle').setAttribute('aria-label',t('סינון לפי כוריאוגרף, סוג ריקוד ושנה','Filter by choreographer, formation and year'));$('tabs').setAttribute('aria-label',t('הספרייה','Collection'));$('sort').setAttribute('aria-label',t('סדר תצוגה','Sort by'));const menu=$('libraryMenu').querySelector('summary'),menuLabel=t('תפריט','Menu');menu.setAttribute('aria-label',menuLabel);menu.title=menuLabel;document.querySelectorAll('#language,[data-language-switch]').forEach(updateLanguageControl);syncFavorites()}
 localizeControls();

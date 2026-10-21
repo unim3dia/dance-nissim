@@ -17,7 +17,7 @@
 html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 body { margin: 0; color: var(--text); background: radial-gradient(ellipse at 75% 0, var(--wash), transparent 650px), var(--bg); font-family: var(--body); line-height: 1.6; }
 body.light { --bg: #f6f3ec; --panel: #fffdf8; --text: #203239; --muted: #59676b; --gold: #775728; --border: #d8d7cd; --input: #fffdf8; --wash: #b89d5f0e; --shadow: #47361b0b; color-scheme: light; }
-body.large { font-size: 1.15rem; }
+body.large { font-size: 1.3rem; }
 button, input, select { font: inherit; }
 button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
 button, a, summary { touch-action: manipulation; }

@@ -9,7 +9,9 @@ const toggle = source.split("$('textSize').onclick=()=>{")[1].split('};')[0];
 const themeToggle = source.split("$('theme').onclick=()=>{")[1].split('};')[0];
 for (const lang of ['en', 'he']) {
 for (const saved of [undefined, false, true]) {
-for (const theme of ['light', 'dark']) {
+for (const theme of [undefined, 'light', 'dark']) {
+for (const hour of [0, 6, 7, 12, 18, 19, 23]) {
+  const expectedTheme = theme ?? (hour >= 7 && hour < 19 ? 'light' : 'dark');
   const classes = new Set(), attributes = {}, storage = { large: saved, theme };
   const children = Object.fromEntries(['.text-small', '.text-large', '.sun-icon', '.moon-icon'].map(key => [key, {}]));
   const elements = Object.fromEntries(['textSize', 'theme'].map(id => [id, {
@@ -17,7 +19,7 @@ for (const theme of ['light', 'dark']) {
     querySelector: selector => children[selector]
   }]));
   const context = vm.createContext({
-    Date, lang,
+    Date: class extends Date { getHours() { return hour; } }, lang,
     read: (key, fallback) => storage[key] ?? fallback,
     write: (key, value) => storage[key] = value,
     t: (he, en) => lang === 'he' ? he : en,
@@ -32,17 +34,21 @@ for (const theme of ['light', 'dark']) {
   assert.equal(attributes['textSizearia-pressed'], saved ?? true);
   assert.equal(children['.text-small'].textContent, lang === 'he' ? 'א' : 'a');
   assert.equal(children['.text-large'].textContent, lang === 'he' ? 'א' : 'A');
-  assert.equal(children['.sun-icon'].hidden, theme === 'light');
-  assert.equal(children['.moon-icon'].hidden, theme === 'dark');
+  assert.equal(classes.has('light'), expectedTheme === 'light');
+  assert.equal(children['.sun-icon'].hidden, expectedTheme === 'light');
+  assert.equal(children['.moon-icon'].hidden, expectedTheme === 'dark');
   assert.equal(attributes['themearia-label'], elements.theme.title);
   vm.runInContext(toggle, context);
   assert.equal(storage.large, !(saved ?? true));
   assert.equal(classes.has('large'), !(saved ?? true));
   vm.runInContext(themeToggle, context);
-  assert.equal(storage.theme, theme === 'light' ? 'dark' : 'light');
-  assert.equal(children['.sun-icon'].hidden, theme === 'dark');
-  assert.equal(children['.moon-icon'].hidden, theme === 'light');
+  assert.equal(storage.theme, expectedTheme === 'light' ? 'dark' : 'light');
+  assert.equal(children['.sun-icon'].hidden, expectedTheme === 'dark');
+  assert.equal(children['.moon-icon'].hidden, expectedTheme === 'light');
 }
 }
 }
-console.log('Verified bilingual header controls, larger-text default, saved preferences, and both toggles.');
+}
+assert.match(source, /let lang=read\('language','he'\)/);
+assert.match(fs.readFileSync(path.join(__dirname, '..', 'style.css'), 'utf8'), /body\.large\s*\{\s*font-size:\s*1\.3rem/);
+console.log('Verified Hebrew-first default, local-hour day/night boundaries, larger-text default, saved overrides, and both toggles.');
