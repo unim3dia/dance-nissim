@@ -89,6 +89,20 @@ context.autoPlay = true;
 content.querySelector('.autoplay-toggle').onEnable();
 assert.equal(mockVideo(content.querySelector('.player')).playCalls, 1, 'Enabling autoplay must command the existing player');
 assert.equal(content.querySelector('iframe'), lessonFrame, 'Video choices and autoplay must not rebuild the iframe');
+const live = { id: 'live-id', type: 'live' };
+context.featuredRecordings = () => [demo, lesson, live];
+for (const lang of ['en', 'he']) {
+  context.lang = lang;
+  context.renderDance();
+  const choices = content.querySelector('.recordings').children;
+  assert.equal(choices[2].textContent, lang === 'he' ? 'לצפות בהרקדה' : 'Watch live version');
+  choices[2].onclick();
+  assert.equal(content.querySelector('.player').dataset.recordingId, live.id);
+  choices[0].onclick();
+  assert.equal(content.querySelector('.player').dataset.recordingId, demo.id);
+  assert.equal(content.querySelector('iframe'), lessonFrame);
+}
+context.featuredRecordings = () => [demo, lesson];
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(html, /id="dialogLanguage"[^>]*data-language-switch/);
@@ -98,6 +112,7 @@ for (const file of ['app.js', 'discover.js', 'video-player.js']) {
   assert.ok(!/[?&]cc_load_policy=1\b/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} forces captions on`);
 }
 console.log('Verified dance/lesson round trips, bilingual selection, preserved iframe identity, and no forced captions.');
+console.log('Verified demonstration/live switching in both languages without rebuilding the player.');
 const discovery = fs.readFileSync(path.join(root, 'discover.js'), 'utf8');
 const initialization = source.split('\n').find(line => line.startsWith('let autoPlay='));
 const autoplayLabel = source.split('\n').find(line => line.startsWith('function updateAutoplayControl'));

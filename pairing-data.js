@@ -5,7 +5,8 @@ window.ARCHIVE_PAIRING_REVIEW={
   typeCorrections:{
     BZh47ddzoZ0:'teaching',hfmShaPqbyI:'teaching','7k1jBTdE4lw':'teaching',TshMfAqknHw:'teaching',
     k8i8BbJxm74:'teaching',mQYJPvGrGt0:'teaching','8PrlCFECpkY':'teaching','6pT4SFhnhjI':'teaching',
-    '7oHDOeFedFc':'dance',g6oi9FDWhzs:'dance',c8D3acLqFCE:'dance'
+    '7oHDOeFedFc':'dance',g6oi9FDWhzs:'dance',c8D3acLqFCE:'dance',
+    _YVMBD_QDWM:'live'
   },
   // sourceId identifies an existing recording of this choreography, not a newly invented video.
   titleMatches:[
@@ -34,6 +35,7 @@ window.ARCHIVE_PAIRING_REVIEW={
   ],
   // Restore credits from a companion's verified title card, or a cited dance registry.
   creditMatches:[
+    {ids:['jGxEvJAojec'],sourceId:'lP1GCJi2Qaw',reason:'Curator correction 2026-10-24: Debka Keff is by Moshe Eskayo, confirmed by the studio and live title cards; the Lipson credit was incorrect.'},
     {ids:['4z44PDtseSk'],sourceId:'dyUiJqCNoYY',reason:'Matching dance title, formation, and year; companion title-card credit is Dudu Barzilay.'},
     {ids:['0HVRMrQeHQg','bKGfWpqPdmg'],sourceId:'LnIaj-lLctg',reason:'Exact bilingual title match; demonstration title-card credit is Rafi Ziv.'},
     {ids:['7UlpztilD5w'],sourceId:'5QH-aWo3QVE',reason:'Matching title, formation, and year; both lesson title cards credit Eliyahu Gamliel.'},

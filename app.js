@@ -125,7 +125,8 @@ function featuredRecordings(group){
   const ordered=[group.main,...group.records];
   const watch=ordered.find(v=>v.type==='dance')||ordered.find(v=>v.type==='live');
   const learn=ordered.find(v=>v.id===preferredLesson[group.main.he]&&v.type==='teaching')||ordered.find(v=>v.type==='teaching');
-  return [watch,learn].filter(Boolean);
+  const live=watch?.type==='dance'?ordered.find(v=>v.type==='live'):null;
+  return [watch,learn,live].filter(Boolean);
 }
 function collectionNeighbor(key,keys,step){const index=keys.indexOf(key);return index<0?null:keys[((index+step)%keys.length+keys.length)%keys.length]||null}
 function chooseHero(collection,previous,random=Math.random){
@@ -183,7 +184,7 @@ function renderDance(){
     [...recordings.children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===v.id));
   }
   for(const v of featured){
-    const label=v.type==='teaching'?t('ללמוד את הצעדים','Learn the steps'):t('לצפות בריקוד','Watch the dance');
+    const label=v.type==='teaching'?t('ללמוד את הצעדים','Learn the steps'):v.type==='live'?t('לצפות בהרקדה','Watch live version'):t('לצפות בריקוד','Watch the dance');
     const button=element('button','',label);button.dataset.id=v.id;button.onclick=()=>select(v);recordings.append(button);
   }
   recordings.hidden=featured.length<2;

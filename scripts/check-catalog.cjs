@@ -26,11 +26,12 @@ vm.runInContext(`
   for (const group of window.testGroups) {
     const featured = featuredRecordings(group);
     if (featured[0].id !== group.main.id) throw new Error('Preferred recording changed');
-    const kinds = featured.map(v => v.type === 'teaching' ? 'teaching' : 'dance');
+    const kinds = featured.map(v => v.type);
     if (new Set(kinds).size !== kinds.length) throw new Error('Duplicate featured recording kind');
     if (group.records.some(v => v.type === 'teaching') && !featured.some(v => v.type === 'teaching')) throw new Error('Lesson lost');
     if (group.records.some(v => v.type === 'dance' || v.type === 'live') && !featured.some(v => v.type !== 'teaching')) throw new Error('Watch option lost');
-    if (featured.length > 2) throw new Error('Duplicate watch/learn buttons returned');
+    if (group.records.some(v => v.type === 'live') && !featured.some(v => v.type === 'live')) throw new Error('Live recording lost');
+    if (featured.length > 3) throw new Error('Duplicate recording buttons returned');
   }
   const keys = ['first', 'middle', 'last'];
   if (collectionNeighbor('first', keys, -1) !== 'last' || collectionNeighbor('last', keys, 1) !== 'first') throw new Error('Circular navigation boundary failed');

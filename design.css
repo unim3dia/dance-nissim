@@ -232,6 +232,7 @@ dialog::backdrop { background: #030e16d9; backdrop-filter: blur(8px); }
 .recordings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .recordings button { min-width: 0; min-height: 48px; padding: 10px 8px; font-size: .85em; line-height: 1.4; border-color: var(--control-border); }
 .recordings button[aria-pressed=true] { background: var(--accent); color: var(--action-ink); border-color: var(--accent); }
+.recordings button:last-child:nth-child(3) { grid-column: 1 / -1; }
 .room-recordings { width: 100%; margin: 0; }
 .dance-navigation { border-color: var(--border); margin: 24px 0; }
 .dance-navigation button { font-size: .9em; background: var(--accent); color: var(--action-ink); border-color: transparent; }
